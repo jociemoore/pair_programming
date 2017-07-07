@@ -2,7 +2,8 @@ import java.util.*;
 
 public class Bowling {
 
-	public void bowl(int pinsDown) {
+	public Bowling bowl(int pinsDown) {
+		return this;
 	}
 
 	public int score() {
