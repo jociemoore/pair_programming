@@ -8,13 +8,13 @@ public class Bowling {
     totalPoints = 0; 
   }
 
-	public Bowling bowl(int pinsDown) {
+  public Bowling bowl(int pinsDown) {
     totalPoints += pinsDown;
-		return this;
-	}
+    return this;
+  }
 
-	public int score() {
-		return totalPoints;
-	}
+  public int score() {
+    return totalPoints;
+  }
 
 }
