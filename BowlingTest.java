@@ -36,4 +36,16 @@ public class BowlingTest {
 		assertEquals(0, score);
 	}
 
+	@Test (expected = IllegalArgumentException.class)
+	public void shouldThrowIllegalArgumentExpectionWhenPinsDownIsNegative() throws Exception {
+		try {
+			bowling.bowl(-1);
+		} catch (IllegalArgumentException iae) {
+			String message = "Cannot knock down negative pins. Bowl again.";
+			assertEquals(message, iae.getMessage());
+		}
+		fail("Illegal Argument Exception was not thrown for bowling negative pins.");
+		
+	}
+
 }
