@@ -41,12 +41,11 @@ public class BowlingTest {
 	public void shouldThrowIllegalArgumentExceptionWhenPinsDownIsNegative() throws Exception {
 		try {
 			bowling.bowl(-1);
+			fail("Illegal Argument Exception was not thrown for bowling negative pins.");
 		} catch (IllegalArgumentException iae) {
 			String message = "Cannot knock down negative pins. Bowl again.";
 			assertEquals(message, iae.getMessage());
 		}
-		fail("Illegal Argument Exception was not thrown for bowling negative pins.");
-		
 	}
 
 }
