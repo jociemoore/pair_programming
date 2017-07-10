@@ -13,8 +13,9 @@ public class BowlingTest {
 	}
 
 	@Test
-	public void shouldOutputAScoreGivenOneTurn() throws Exception {
-		bowling.bowl(5);
+	public void shouldOutputAScoreGivenOneFrame() throws Exception {
+		bowling.bowl(2);
+		bowling.bowl(3);
 		int score = bowling.score();
 		assertEquals(5, score);
 	}
@@ -36,8 +37,8 @@ public class BowlingTest {
 		assertEquals(0, score);
 	}
 
-	@Test (expected = IllegalArgumentException.class)
-	public void shouldThrowIllegalArgumentExpectionWhenPinsDownIsNegative() throws Exception {
+	@Test
+	public void shouldThrowIllegalArgumentExceptionWhenPinsDownIsNegative() throws Exception {
 		try {
 			bowling.bowl(-1);
 		} catch (IllegalArgumentException iae) {
