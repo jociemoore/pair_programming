@@ -22,16 +22,16 @@ public class BowlingTest {
 
 	@Test
 	public void shouldOutputScoreForEmptyGame() throws Exception {
-		bowling.bowl(0)
-			.bowl(0)
-			.bowl(0)
-			.bowl(0)
-			.bowl(0)
-			.bowl(0)
-			.bowl(0)
-			.bowl(0)
-			.bowl(0)
-			.bowl(0);
+		bowling.bowl(0).bowl(0)
+			.bowl(0).bowl(0)
+			.bowl(0).bowl(0)
+			.bowl(0).bowl(0)
+			.bowl(0).bowl(0)
+			.bowl(0).bowl(0)
+			.bowl(0).bowl(0)
+			.bowl(0).bowl(0)
+			.bowl(0).bowl(0)
+			.bowl(0).bowl(0);
 
 		int score = bowling.score();
 		assertEquals(0, score);
