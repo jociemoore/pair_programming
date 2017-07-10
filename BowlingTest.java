@@ -47,5 +47,14 @@ public class BowlingTest {
 			assertEquals(message, iae.getMessage());
 		}
 	}
+	
+	@Test
+	public void shouldNotTotalScoreForAFrameWithASpare() throws Exception {
+		bowling.bowl(5).bowl(5);
+		
+		int score = bowling.score();
+		
+		assertEquals(0, score);
+	}
 
 }
