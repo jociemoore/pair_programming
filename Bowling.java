@@ -9,6 +9,9 @@ public class Bowling {
   }
 
   public Bowling bowl(int pinsDown) {
+		if (pinsDown < 0) {
+			throw new IllegalArgumentException("Cannot knock down negative pins. Bowl again.");
+		}
     totalPoints += pinsDown;
     return this;
   }
