@@ -22,16 +22,16 @@ public class BowlingTest {
 
 	@Test
 	public void shouldOutputScoreForEmptyGame() throws Exception {
-		bowling.bowl(0)
-			.bowl(0)
-			.bowl(0)
-			.bowl(0)
-			.bowl(0)
-			.bowl(0)
-			.bowl(0)
-			.bowl(0)
-			.bowl(0)
-			.bowl(0);
+		bowling.bowl(0).bowl(0)
+			.bowl(0).bowl(0)
+			.bowl(0).bowl(0)
+			.bowl(0).bowl(0)
+			.bowl(0).bowl(0)
+			.bowl(0).bowl(0)
+			.bowl(0).bowl(0)
+			.bowl(0).bowl(0)
+			.bowl(0).bowl(0)
+			.bowl(0).bowl(0);
 
 		int score = bowling.score();
 		assertEquals(0, score);
@@ -41,12 +41,20 @@ public class BowlingTest {
 	public void shouldThrowIllegalArgumentExceptionWhenPinsDownIsNegative() throws Exception {
 		try {
 			bowling.bowl(-1);
+			fail("Illegal Argument Exception was not thrown for bowling negative pins.");
 		} catch (IllegalArgumentException iae) {
 			String message = "Cannot knock down negative pins. Bowl again.";
 			assertEquals(message, iae.getMessage());
 		}
-		fail("Illegal Argument Exception was not thrown for bowling negative pins.");
+	}
+	
+	@Test
+	public void shouldNotTotalScoreForAFrameWithASpare() throws Exception {
+		bowling.bowl(5).bowl(5);
 		
+		int score = bowling.score();
+		
+		assertEquals(0, score);
 	}
 
 }
