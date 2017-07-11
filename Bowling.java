@@ -17,7 +17,10 @@ public class Bowling {
   }
 
   public int score() {
-    return totalPoints;
+    if (totalPoints == 10) {
+        return 0;
+    } else 
+        return totalPoints;
   }
 
 }
