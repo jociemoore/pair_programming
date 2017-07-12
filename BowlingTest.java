@@ -57,4 +57,26 @@ public class BowlingTest {
 		assertEquals(0, score);
 	}
 
+	@Test
+	public void shouldOutputScoreOfPreviousFramesAfterASpare() throws Exception {
+		bowling.bowl(2).bowl(7)
+			.bowl(4).bowl(2)
+			.bowl(5).bowl(5);
+
+		int score = bowling.score();
+
+		assertEquals(15, score);
+	}
+
+	@Test
+	public void shouldIncludeSpareScoreAfterNextNonSpareNonStrikeFrame() throws Exception {
+		bowling.bowl(3).bowl(5)
+			.bowl(3).bowl(7)
+			.bowl(4).bowl(0);
+
+		int score = bowling.score();
+
+		assertEquals(26, score);
+	}
+
 }
