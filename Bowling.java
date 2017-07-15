@@ -107,12 +107,9 @@ class Scoreboard {
 			totalPoints += currentFrameTotal;
     }
     
-    Optional<Frame> previousFrameOpt = previousFrame();
-    if (previousFrameOpt.isPresent()) {
-      Frame previousFrame = previousFrameOpt.get();
-      if (previousFrame.isSpare()) {
-        totalPoints += previousFrame.getFrameScore() + getCurrentFrame().firstBowl();
-      }
+    Optional<Frame> previousFrame = previousFrame();
+    if (previousFrame.isPresent() && previousFrame.get().isSpare()) {
+      totalPoints += previousFrame.get().getFrameScore() + getCurrentFrame().firstBowl();
     }
 	}
 
