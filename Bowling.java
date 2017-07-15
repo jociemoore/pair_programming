@@ -49,6 +49,10 @@ class Frame {
 	public Boolean isFull() {
 		return frameScores[0] != null && frameScores[1] != null ? true : false;
 	}
+  
+  public Boolean isSpare() {
+    return getFrameScore() == 10;
+  }
 
 }
 
@@ -97,16 +101,17 @@ class Scoreboard {
   }
 
 	private void updateTotalPoints() {
-		Integer currentFrameTotal = getCurrentFrame().getFrameScore();
-		if (currentFrameTotal != 10)
-				totalPoints += currentFrameTotal;
+    Frame currentFrame = getCurrentFrame();
+    if (!currentFrame.isSpare()) {
+      Integer currentFrameTotal = currentFrame.getFrameScore();
+			totalPoints += currentFrameTotal;
+    }
     
-    Optional<Frame> previousFrame = previousFrame();
-    if (previousFrame.isPresent()) {
-      Integer previousFrameTotal = previousFrame.get().getFrameScore();
-
-      if (previousFrameTotal == 10) {
-        totalPoints += previousFrameTotal + getCurrentFrame().firstBowl();
+    Optional<Frame> previousFrameOpt = previousFrame();
+    if (previousFrameOpt.isPresent()) {
+      Frame previousFrame = previousFrameOpt.get();
+      if (previousFrame.isSpare()) {
+        totalPoints += previousFrame.getFrameScore() + getCurrentFrame().firstBowl();
       }
     }
 	}
