@@ -86,14 +86,25 @@ class Scoreboard {
 		Frame currentFrame = allFrames.get(lastIndex);
 		return currentFrame;
 	}
+  
+  private Optional<Frame> previousFrame() {
+    if (allFrames.size() > 1) {
+      int nextToLastIndex = allFrames.size() - 2;
+      return Optional.of(allFrames.get(nextToLastIndex));
+    }
+    
+    return Optional.empty();
+  }
 
 	private void updateTotalPoints() {
 		Integer currentFrameTotal = getCurrentFrame().getFrameScore();
 		if (currentFrameTotal != 10)
 				totalPoints += currentFrameTotal;
     
-    if (allFrames.size() > 1) {
-      Integer previousFrameTotal = allFrames.get(allFrames.size()-2).getFrameScore();
+    Optional<Frame> previousFrame = previousFrame();
+    if (previousFrame.isPresent()) {
+      Integer previousFrameTotal = previousFrame.get().getFrameScore();
+
       if (previousFrameTotal == 10) {
         totalPoints += previousFrameTotal + getCurrentFrame().firstBowl();
       }
