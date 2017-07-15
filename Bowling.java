@@ -41,6 +41,10 @@ class Frame {
 		Integer totalFrameScore = frameScores[0] + frameScores[1];
 		return totalFrameScore;
 	}
+  
+  public Integer firstBowl() {
+    return frameScores[0];
+  }
 
 	public Boolean isFull() {
 		return frameScores[0] != null && frameScores[1] != null ? true : false;
@@ -87,6 +91,13 @@ class Scoreboard {
 		Integer currentFrameTotal = getCurrentFrame().getFrameScore();
 		if (currentFrameTotal != 10)
 				totalPoints += currentFrameTotal;
+    
+    if (allFrames.size() > 1) {
+      Integer previousFrameTotal = allFrames.get(allFrames.size()-2).getFrameScore();
+      if (previousFrameTotal == 10) {
+        totalPoints += previousFrameTotal + getCurrentFrame().firstBowl();
+      }
+    }
 	}
 
 }
