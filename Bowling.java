@@ -54,7 +54,7 @@ class Frame {
 
 class Scoreboard {
 
-	private LinkedList<Frame> allFrames;
+	private List<Frame> allFrames;
 	private Integer totalPoints;
 
 	public Scoreboard() {
