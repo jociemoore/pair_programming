@@ -72,22 +72,22 @@ class Scoreboard {
 		}
 	}
 
-	public void addFrame() {
+	public Integer getScore() {
+		return totalPoints;
+	}
+
+	private void addFrame() {
 		Frame frame = new Frame();
 		allFrames.add(frame);
 	}
 
-	public Frame getCurrentFrame() {
+	private Frame getCurrentFrame() {
 		int lastIndex = allFrames.size() - 1;
 		Frame currentFrame = allFrames.get(lastIndex);
 		return currentFrame;
 	}
 
-	public Integer getScore() {
-		return totalPoints;
-	}
-
-	public void updateTotalPoints() {
+	private void updateTotalPoints() {
 		Integer currentFrameTotal = getCurrentFrame().getFrameScore();
 		if (currentFrameTotal != 10)
 				totalPoints += currentFrameTotal;
