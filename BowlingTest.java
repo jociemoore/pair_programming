@@ -79,5 +79,26 @@ public class BowlingTest {
 
 		assertEquals(26, score);
 	}
+	
+	@Test
+	public void shouldOutputScoreOfPreviousFramesAfterAStrike() throws Exception {
+		bowling.bowl(4).bowl(2)
+			.bowl(10);
+		
+		int score = bowling.score();
+		
+		assertEquals(6, score);
+	}
+	
+	@Test
+	public void shouldScoreStrikeFrameAfterNextTwoBallsForSingleFrame() throws Exception {
+		bowling.bowl(4).bowl(2)
+			.bowl(10)
+			.bowl(4).bowl(2);
+		
+		int score = bowling.score();
+		
+		assertEquals(28, score);
+	}
 
 }

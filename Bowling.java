@@ -41,16 +41,24 @@ class Frame {
 		Integer totalFrameScore = frameScores[0] + frameScores[1];
 		return totalFrameScore;
 	}
+	
+	public Integer firstBowl() {
+		return frameScores[0];
+	}
 
 	public Boolean isFull() {
 		return frameScores[0] != null && frameScores[1] != null ? true : false;
+	}
+	
+	public Boolean isSpare() {
+		return getFrameScore() == 10;
 	}
 
 }
 
 class Scoreboard {
 
-	private LinkedList<Frame> allFrames;
+	private List<Frame> allFrames;
 	private Integer totalPoints;
 
 	public Scoreboard() {
@@ -68,25 +76,41 @@ class Scoreboard {
 		}
 	}
 
-	public void addFrame() {
-		Frame frame = new Frame();
-		allFrames.add(frame);
-	}
-
-	public Frame getCurrentFrame() {
-		int lastIndex = allFrames.size() - 1;
-		Frame currentFrame = allFrames.get(lastIndex);
-		return currentFrame;
-	}
-
 	public Integer getScore() {
 		return totalPoints;
 	}
 
-	public void updateTotalPoints() {
-		Integer currentFrameTotal = getCurrentFrame().getFrameScore();
-		if (currentFrameTotal != 10)
-				totalPoints += currentFrameTotal;
+	private void addFrame() {
+		Frame frame = new Frame();
+		allFrames.add(frame);
+	}
+
+	private Frame getCurrentFrame() {
+		int lastIndex = allFrames.size() - 1;
+		Frame currentFrame = allFrames.get(lastIndex);
+		return currentFrame;
+	}
+	
+	private Optional<Frame> previousFrame() {
+		if (allFrames.size() > 1) {
+			int nextToLastIndex = allFrames.size() - 2;
+			return Optional.of(allFrames.get(nextToLastIndex));
+		}
+		
+		return Optional.empty();
+	}
+
+	private void updateTotalPoints() {
+		Frame currentFrame = getCurrentFrame();
+		if (!currentFrame.isSpare()) {
+			Integer currentFrameTotal = currentFrame.getFrameScore();
+			totalPoints += currentFrameTotal;
+		}
+		
+		Optional<Frame> previousFrame = previousFrame();
+		if (previousFrame.isPresent() && previousFrame.get().isSpare()) {
+			totalPoints += previousFrame.get().getFrameScore() + getCurrentFrame().firstBowl();
+		}
 	}
 
 }
