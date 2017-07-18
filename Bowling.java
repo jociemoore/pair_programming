@@ -2,115 +2,124 @@ import java.util.*;
 
 public class Bowling {
 
-	private Scoreboard scoreboard;
+  private Scoreboard scoreboard;
 
-	public Bowling() {
-		scoreboard = new Scoreboard();
-	}
+  public Bowling() {
+    scoreboard = new Scoreboard();
+  }
 
-	public Bowling bowl(Integer pinsDown) {
-		if (pinsDown < 0) {
-			throw new IllegalArgumentException("Cannot knock down negative pins. Bowl again.");
-		}
-		scoreboard.update(pinsDown);
-		return this;
-	}
+  public Bowling bowl(Integer pinsDown) {
+    if (pinsDown < 0) {
+      throw new IllegalArgumentException("Cannot knock down negative pins. Bowl again.");
+    }
+    scoreboard.update(pinsDown);
+    return this;
+  }
 
-	public Integer score() {
-		return scoreboard.getScore();
-	}
+  public Integer score() {
+    return scoreboard.getScore();
+  }
 
 }
 
 class Frame {
 
-	private Integer[] frameScores;
+  private Integer[] frameScores;
 
-	public Frame() {
-		frameScores = new Integer[2];
-	}
+  public Frame() {
+    frameScores = new Integer[2];
+  }
 
-	public void update(Integer pinsDown) {
-		if (frameScores[0] == null)
-			frameScores[0] = pinsDown;
-		else if (frameScores[1] == null)
-			frameScores[1] = pinsDown;
-	}
+  public void update(Integer pinsDown) {
+    if (frameScores[0] == null)
+      frameScores[0] = pinsDown;
+    else if (frameScores[1] == null)
+      frameScores[1] = pinsDown;
+  }
 
-	public Integer getFrameScore() {
-		Integer totalFrameScore = frameScores[0] + frameScores[1];
-		return totalFrameScore;
-	}
-	
-	public Integer firstBowl() {
-		return frameScores[0];
-	}
+  public Integer getFrameScore() {
+    Integer totalFrameScore = frameScores[0] + frameScores[1];
+    return totalFrameScore;
+  }
+  
+  public Integer firstBowl() {
+    return frameScores[0];
+  }
 
-	public Boolean isFull() {
-		return frameScores[0] != null && frameScores[1] != null ? true : false;
-	}
-	
-	public Boolean isSpare() {
-		return getFrameScore() == 10;
-	}
+  public Boolean isFull() {
+    return frameScores[0] != null && frameScores[1] != null ? true : false;
+  }
+  
+  public Boolean isSpare() {
+    return getFrameScore() == 10 && firstBowl() != 10;
+  }
+
+  public Boolean isStrike() {
+    return firstBowl() == 10;
+  }
 
 }
 
 class Scoreboard {
 
-	private List<Frame> allFrames;
-	private Integer totalPoints;
+  private List<Frame> allFrames;
+  private Integer totalPoints;
 
-	public Scoreboard() {
-		totalPoints = 0;
-		allFrames = new LinkedList<>();
-		addFrame();
-	}
+  public Scoreboard() {
+    totalPoints = 0;
+    allFrames = new LinkedList<>();
+    addFrame();
+  }
 
-	public void update(Integer pinsDown) {
-		Frame currentFrame = getCurrentFrame();
-		currentFrame.update(pinsDown);
-		if (currentFrame.isFull()) {
-			updateTotalPoints();
-			addFrame();
-		}
-	}
+  public void update(Integer pinsDown) {
+    Frame currentFrame = getCurrentFrame();
+    currentFrame.update(pinsDown);
+    if (currentFrame.isStrike()) {
+      currentFrame.update(0);
+      addFrame();
+    } else if (currentFrame.isFull()) {
+      updateTotalPoints();
+      addFrame();
+    }
+  }
 
-	public Integer getScore() {
-		return totalPoints;
-	}
+  public Integer getScore() {
+    return totalPoints;
+  }
 
-	private void addFrame() {
-		Frame frame = new Frame();
-		allFrames.add(frame);
-	}
+  private void addFrame() {
+    Frame frame = new Frame();
+    allFrames.add(frame);
+  }
 
-	private Frame getCurrentFrame() {
-		int lastIndex = allFrames.size() - 1;
-		Frame currentFrame = allFrames.get(lastIndex);
-		return currentFrame;
-	}
-	
-	private Optional<Frame> previousFrame() {
-		if (allFrames.size() > 1) {
-			int nextToLastIndex = allFrames.size() - 2;
-			return Optional.of(allFrames.get(nextToLastIndex));
-		}
-		
-		return Optional.empty();
-	}
+  private Frame getCurrentFrame() {
+    int lastIndex = allFrames.size() - 1;
+    Frame currentFrame = allFrames.get(lastIndex);
+    return currentFrame;
+  }
+  
+  private Optional<Frame> previousFrame() {
+    if (allFrames.size() > 1) {
+      int nextToLastIndex = allFrames.size() - 2;
+      return Optional.of(allFrames.get(nextToLastIndex));
+    }
+    
+    return Optional.empty();
+  }
 
-	private void updateTotalPoints() {
-		Frame currentFrame = getCurrentFrame();
-		if (!currentFrame.isSpare()) {
-			Integer currentFrameTotal = currentFrame.getFrameScore();
-			totalPoints += currentFrameTotal;
-		}
-		
-		Optional<Frame> previousFrame = previousFrame();
-		if (previousFrame.isPresent() && previousFrame.get().isSpare()) {
-			totalPoints += previousFrame.get().getFrameScore() + getCurrentFrame().firstBowl();
-		}
-	}
+  private void updateTotalPoints() {
+    Frame currentFrame = getCurrentFrame();
+    if (!currentFrame.isSpare()) {
+      Integer currentFrameTotal = currentFrame.getFrameScore();
+      totalPoints += currentFrameTotal;
+    }
+    
+    Optional<Frame> previousFrame = previousFrame();
+    if (previousFrame.isPresent() && previousFrame.get().isSpare() ) {
+      totalPoints += previousFrame.get().getFrameScore() + getCurrentFrame().firstBowl();
+    } else if (previousFrame.isPresent() && previousFrame.get().isStrike()) {
+      totalPoints += previousFrame.get().getFrameScore() + getCurrentFrame().getFrameScore();
+    }
+  }
 
 }
