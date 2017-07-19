@@ -67,17 +67,19 @@ class Scoreboard {
 
   public Scoreboard() {
     totalPoints = 0;
-    allFrames = new LinkedList<>();
+    allFrames = new ArrayList<>();
     addFrame();
   }
 
   public void update(Integer pinsDown) {
     Frame currentFrame = getCurrentFrame();
     currentFrame.update(pinsDown);
+
     if (currentFrame.isStrike()) {
       currentFrame.update(0);
-      addFrame();
-    } else if (currentFrame.isFull()) {
+    }
+
+    if (currentFrame.isFull()) {
       updateTotalPoints();
       addFrame();
     }
@@ -109,7 +111,7 @@ class Scoreboard {
 
   private void updateTotalPoints() {
     Frame currentFrame = getCurrentFrame();
-    if (!currentFrame.isSpare()) {
+    if (!currentFrame.isSpare() && !currentFrame.isStrike()) {
       Integer currentFrameTotal = currentFrame.getFrameScore();
       totalPoints += currentFrameTotal;
     }
