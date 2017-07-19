@@ -101,4 +101,23 @@ public class BowlingTest {
 		assertEquals(28, score);
 	}
 
+	@Test
+	public void shouldOutputScoreboardFrameByFrame() throws Exception {
+		bowling.bowl(1).bowl(2)
+			.bowl(3).bowl(4)
+			.bowl(5).bowl(4)
+			.bowl(3).bowl(2)
+			.bowl(1).bowl(0)
+			.bowl(1).bowl(2)
+			.bowl(3).bowl(4)
+			.bowl(5).bowl(4)
+			.bowl(3).bowl(2)
+			.bowl(1).bowl(0);
+
+			String expectedScoreboard = "[1,2],[3,4],[5,4],[3,2],[1,0],[1,2],[3,4],[5,4],[3,2],[1,0]";
+			String actualScoreboard = bowling.printScoreboard();
+
+			assertEquals(expectedScoreboard, actualScoreboard);
+	}
+
 }

@@ -20,6 +20,10 @@ public class Bowling {
     return scoreboard.getScore();
   }
 
+  public String printScoreboard() {
+  	return "";
+  }
+
 }
 
 class Frame {
