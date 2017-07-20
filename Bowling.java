@@ -20,6 +20,10 @@ public class Bowling {
 		return scoreboard.getScore();
 	}
 
+	public String printScoreboard() {
+		return "";
+	}
+
 }
 
 class Frame {
@@ -51,7 +55,11 @@ class Frame {
 	}
 	
 	public Boolean isSpare() {
-		return getFrameScore() == 10;
+		return getFrameScore() == 10 && firstBowl() != 10;
+	}
+
+	public Boolean isStrike() {
+		return firstBowl() == 10;
 	}
 
 }
@@ -63,13 +71,18 @@ class Scoreboard {
 
 	public Scoreboard() {
 		totalPoints = 0;
-		allFrames = new LinkedList<>();
+		allFrames = new ArrayList<>();
 		addFrame();
 	}
 
 	public void update(Integer pinsDown) {
 		Frame currentFrame = getCurrentFrame();
 		currentFrame.update(pinsDown);
+
+		if (currentFrame.isStrike()) {
+			currentFrame.update(0);
+		}
+
 		if (currentFrame.isFull()) {
 			updateTotalPoints();
 			addFrame();
@@ -102,14 +115,16 @@ class Scoreboard {
 
 	private void updateTotalPoints() {
 		Frame currentFrame = getCurrentFrame();
-		if (!currentFrame.isSpare()) {
+		if (!currentFrame.isSpare() && !currentFrame.isStrike()) {
 			Integer currentFrameTotal = currentFrame.getFrameScore();
 			totalPoints += currentFrameTotal;
 		}
 		
 		Optional<Frame> previousFrame = previousFrame();
-		if (previousFrame.isPresent() && previousFrame.get().isSpare()) {
+		if (previousFrame.isPresent() && previousFrame.get().isSpare() ) {
 			totalPoints += previousFrame.get().getFrameScore() + getCurrentFrame().firstBowl();
+		} else if (previousFrame.isPresent() && previousFrame.get().isStrike()) {
+			totalPoints += previousFrame.get().getFrameScore() + getCurrentFrame().getFrameScore();
 		}
 	}
 
