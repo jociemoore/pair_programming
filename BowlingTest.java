@@ -100,6 +100,17 @@ public class BowlingTest {
 		
 		assertEquals(28, score);
 	}
+	
+	@Test
+	public void shouldScoreStrikeAfterNextTwoStrikes() throws Exception {
+		bowling.bowl(10)
+			.bowl(10)
+			.bowl(10);
+		
+		int score = bowling.score();
+		
+		assertEquals(30, score);
+	}
 
 	@Test
 	public void shouldOutputScoreboardFrameByFrame() throws Exception {
