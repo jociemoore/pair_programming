@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Bowling {
 
@@ -21,7 +22,10 @@ public class Bowling {
 	}
 
 	public String printScoreboard() {
-		return "";
+		return scoreboard.getFrames().stream()
+			.filter(Frame::isFull)
+			.map(Frame::printFrame)
+			.collect(Collectors.joining(","));
 	}
 
 }
@@ -61,6 +65,10 @@ class Frame {
 	public Boolean isStrike() {
 		return firstBowl() == 10;
 	}
+	
+	public String printFrame() {
+		return String.format("[%d,%d]", frameScores[0], frameScores[1]);
+	}
 
 }
 
@@ -87,6 +95,10 @@ class Scoreboard {
 			updateTotalPoints();
 			addFrame();
 		}
+	}
+	
+	public List<Frame> getFrames() {
+		return Collections.unmodifiableList(allFrames);
 	}
 
 	public Integer getScore() {
