@@ -13,6 +13,7 @@ public class BowlingTest {
 		bowling = new Bowling();
 	}
 
+	// @Ignore
 	@Test
 	public void shouldOutputAScoreGivenOneFrame() throws Exception {
 		bowling.bowl(2);
@@ -21,6 +22,7 @@ public class BowlingTest {
 		assertEquals(5, score);
 	}
 
+	// @Ignore
 	@Test
 	public void shouldOutputScoreForEmptyGame() throws Exception {
 		bowling.bowl(0).bowl(0)
@@ -38,6 +40,7 @@ public class BowlingTest {
 		assertEquals(0, score);
 	}
 
+	// @Ignore
 	@Test
 	public void shouldThrowIllegalArgumentExceptionWhenPinsDownIsNegative() throws Exception {
 		try {
@@ -49,6 +52,7 @@ public class BowlingTest {
 		}
 	}
 	
+	// @Ignore	
 	@Test
 	public void shouldNotTotalScoreForAFrameWithASpare() throws Exception {
 		bowling.bowl(5).bowl(5);
@@ -58,6 +62,7 @@ public class BowlingTest {
 		assertEquals(0, score);
 	}
 
+	// @Ignore
 	@Test
 	public void shouldOutputScoreOfPreviousFramesAfterASpare() throws Exception {
 		bowling.bowl(2).bowl(7)
@@ -69,6 +74,7 @@ public class BowlingTest {
 		assertEquals(15, score);
 	}
 
+	// @Ignore
 	@Test
 	public void shouldIncludeSpareScoreAfterNextNonSpareNonStrikeFrame() throws Exception {
 		bowling.bowl(3).bowl(5)
@@ -79,7 +85,8 @@ public class BowlingTest {
 
 		assertEquals(26, score);
 	}
-	
+
+	// @Ignore	
 	@Test
 	public void shouldOutputScoreOfPreviousFramesAfterAStrike() throws Exception {
 		bowling.bowl(4).bowl(2)
@@ -89,7 +96,8 @@ public class BowlingTest {
 		
 		assertEquals(6, score);
 	}
-	
+
+	// @Ignore	
 	@Test
 	public void shouldScoreStrikeFrameAfterNextTwoBallsForSingleFrame() throws Exception {
 		bowling.bowl(4).bowl(2)
@@ -101,6 +109,7 @@ public class BowlingTest {
 		assertEquals(28, score);
 	}
 	
+	// @Ignore
 	@Test
 	public void shouldScoreStrikeAfterNextTwoStrikes() throws Exception {
 		bowling.bowl(10)
@@ -112,6 +121,20 @@ public class BowlingTest {
 		assertEquals(30, score);
 	}
 
+	// @Ignore
+	@Test
+	public void shouldScoreTwoStrikesAfterNonSpareNonStrikeFrame() throws Exception {
+		bowling.bowl(10)
+			.bowl(10)
+			.bowl(5)
+			.bowl(0);
+		
+		int score = bowling.score();
+		
+		assertEquals(45, score);
+	}
+
+	// @Ignore
 	@Test
 	public void shouldOutputScoreboardFrameByFrame() throws Exception {
 		bowling.bowl(1).bowl(2)
