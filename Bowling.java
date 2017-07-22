@@ -74,6 +74,8 @@ class Frame {
 
 class Scoreboard {
 
+	private static final int strikePoints = 10;
+	private static final int sparePoints = 10;
 	private List<Frame> allFrames;
 	private Integer totalPoints;
 	private Optional<Frame> previousFrame;
@@ -154,22 +156,15 @@ class Scoreboard {
 		if (previousFrame.isPresent()) 
 			previousPreviousFrame = previousFrame(previousFrame.get());
 
-		if (!currentFrame.isSpare() && !currentFrame.isStrike()) {
-			Integer currentFrameTotal = currentFrame.getFrameScore();
-			totalPoints += currentFrameTotal;
-		}
+		if (!currentFrame.isSpare() && !currentFrame.isStrike())
+			totalPoints += currentFrame.getFrameScore();
 
-		if (previousFrame.isPresent() && previousFrame.get().isSpare() ) {
-			totalPoints += previousFrame.get().getFrameScore() + 
-						   currentFrame().firstBowl();
-		} else if (isTurkey()) {
-			totalPoints += previousPreviousFrame.get().getFrameScore() + 
-						   previousFrame.get().getFrameScore() + 
-						   currentFrame().firstBowl();
-		} else if (isSingleStrike()) {
-			totalPoints += previousFrame.get().getFrameScore() + 
-			   	 		   currentFrame().getFrameScore();
-		}
+		if (previousFrame.isPresent() && previousFrame.get().isSpare())
+			totalPoints += sparePoints + currentFrame().firstBowl();
+		else if (isTurkey())
+			totalPoints += strikePoints * 3;
+		else if (isSingleStrike())
+			totalPoints += strikePoints + currentFrame().getFrameScore();
 	}
 
 }
