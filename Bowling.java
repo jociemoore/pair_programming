@@ -39,10 +39,12 @@ class Frame {
 	}
 
 	public void update(Integer pinsDown) {
-		if (frameScores[0] == null)
+		if (frameScores[0] == null) {
 			frameScores[0] = pinsDown;
-		else if (frameScores[1] == null)
+		}
+		else if (frameScores[1] == null) {
 			frameScores[1] = pinsDown;
+		}
 	}
 
 	public Integer getFrameScore() {
@@ -74,8 +76,13 @@ class Frame {
 
 class Scoreboard {
 
+	private static final int STRIKE_POINTS = 10;
+	private static final int SPARE_POINTS = 10;
 	private List<Frame> allFrames;
 	private Integer totalPoints;
+	private Optional<Frame> secondToLastFrame;
+	private Optional<Frame> thirdToLastFrame;
+	private Frame currentFrame;
 
 	public Scoreboard() {
 		totalPoints = 0;
@@ -84,7 +91,12 @@ class Scoreboard {
 	}
 
 	public void update(Integer pinsDown) {
-		Frame currentFrame = getCurrentFrame();
+		currentFrame = getCurrentFrame();
+		secondToLastFrame = getFrameBefore(currentFrame);
+		if (secondToLastFrame.isPresent()) {
+			thirdToLastFrame = getFrameBefore(secondToLastFrame.get());
+		}
+
 		currentFrame.update(pinsDown);
 
 		if (currentFrame.isStrike()) {
@@ -116,27 +128,46 @@ class Scoreboard {
 		return currentFrame;
 	}
 	
-	private Optional<Frame> previousFrame() {
-		if (allFrames.size() > 1) {
-			int nextToLastIndex = allFrames.size() - 2;
+	private Optional<Frame> getFrameBefore(Frame frame) {
+		int currentIndex = allFrames.indexOf(frame);
+		int lastIndex = allFrames.size() - 1;
+		int nextToLastIndex = allFrames.size() - 2;
+		int thirdToLastIndex = allFrames.size() - 3;
+
+		if (allFrames.size() > 1 && currentIndex == lastIndex) {
 			return Optional.of(allFrames.get(nextToLastIndex));
+		} else if (allFrames.size() > 2 && currentIndex == nextToLastIndex) {
+			return Optional.of(allFrames.get(thirdToLastIndex));
 		}
 		
 		return Optional.empty();
 	}
 
+	private Boolean isTurkey() {
+		return currentFrame.isStrike() &&
+			   secondToLastFrame.isPresent() && 
+			   secondToLastFrame.get().isStrike() && 
+			   thirdToLastFrame.isPresent() && 
+			   thirdToLastFrame.get().isStrike();
+	}
+
+	private Boolean isSingleStrike() {
+		return secondToLastFrame.isPresent() && 
+		       secondToLastFrame.get().isStrike() && 
+		       !currentFrame.isStrike();
+	}
+
 	private void updateTotalPoints() {
-		Frame currentFrame = getCurrentFrame();
 		if (!currentFrame.isSpare() && !currentFrame.isStrike()) {
-			Integer currentFrameTotal = currentFrame.getFrameScore();
-			totalPoints += currentFrameTotal;
+			totalPoints += currentFrame.getFrameScore();
 		}
-		
-		Optional<Frame> previousFrame = previousFrame();
-		if (previousFrame.isPresent() && previousFrame.get().isSpare() ) {
-			totalPoints += previousFrame.get().getFrameScore() + getCurrentFrame().firstBowl();
-		} else if (previousFrame.isPresent() && previousFrame.get().isStrike()) {
-			totalPoints += previousFrame.get().getFrameScore() + getCurrentFrame().getFrameScore();
+
+		if (secondToLastFrame.isPresent() && secondToLastFrame.get().isSpare()) {
+			totalPoints += SPARE_POINTS + getCurrentFrame().firstBowl();
+		} else if (isTurkey()) {
+			totalPoints += STRIKE_POINTS * 3;
+		} else if (isSingleStrike()) {
+			totalPoints += STRIKE_POINTS + getCurrentFrame().getFrameScore();
 		}
 	}
 
