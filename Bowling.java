@@ -154,7 +154,9 @@ class Scoreboard {
 	private Boolean isSingleStrike() {
 		return secondToLastFrame.isPresent() && 
 		       secondToLastFrame.get().isStrike() && 
-		       !currentFrame.isStrike();
+		       !currentFrame.isStrike() &&
+					 (!thirdToLastFrame.isPresent() ||
+					   thirdToLastFrame.isPresent() && !thirdToLastFrame.get().isStrike());
 	}
 
 	private void updateTotalPoints() {
@@ -167,6 +169,11 @@ class Scoreboard {
 		} else if (isTurkey()) {
 			totalPoints += STRIKE_POINTS * 3;
 		} else if (isSingleStrike()) {
+			totalPoints += STRIKE_POINTS + getCurrentFrame().getFrameScore();
+		} else if (secondToLastFrame.isPresent() && secondToLastFrame.get().isStrike()
+							&& thirdToLastFrame.isPresent() && thirdToLastFrame.get().isStrike()) {
+								System.out.println("scoring...");
+			totalPoints += STRIKE_POINTS * 2 + getCurrentFrame().firstBowl();
 			totalPoints += STRIKE_POINTS + getCurrentFrame().getFrameScore();
 		}
 	}
