@@ -123,6 +123,27 @@ public class BowlingTest {
 		
 		assertEquals(45, score);
 	}
+	
+	@Test
+	public void shouldPreventRecordingExtraBowlsAtEndOfGame() throws Exception {
+		bowling.bowl(1).bowl(2)
+			.bowl(3).bowl(4)
+			.bowl(5).bowl(4)
+			.bowl(3).bowl(2)
+			.bowl(1).bowl(0)
+			.bowl(1).bowl(2)
+			.bowl(3).bowl(4)
+			.bowl(5).bowl(4)
+			.bowl(3).bowl(2)
+			.bowl(5).bowl(1);
+		
+		try {
+			bowling.bowl(5);
+			fail("IllegalArgumentException should have been thrown.");
+		} catch (IllegalArgumentException e) {
+			assertEquals("You cannot bowl more in a completed game.", e.getMessage());
+		}
+	}
 
 	@Test
 	public void shouldOutputScoreboardFrameByFrame() throws Exception {
