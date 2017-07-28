@@ -154,21 +154,44 @@ class Scoreboard {
 	private Boolean isSingleStrike() {
 		return secondToLastFrame.isPresent() && 
 		       secondToLastFrame.get().isStrike() && 
-		       !currentFrame.isStrike();
+		       !currentFrame.isStrike() &&
+					 (!thirdToLastFrame.isPresent() ||
+					   thirdToLastFrame.isPresent() && !thirdToLastFrame.get().isStrike());
 	}
 
 	private void updateTotalPoints() {
 		if (!currentFrame.isSpare() && !currentFrame.isStrike()) {
 			totalPoints += currentFrame.getFrameScore();
 		}
+		
+		if (secondToLastFrame.isPresent()) {
+			if (secondToLastFrame.get().isSpare()) {
+				totalPoints += secondToLastFrame.get().getFrameScore() + currentFrame.firstBowl();
+			} else if (secondToLastFrame.get().isStrike()) {
+				if (!currentFrame.isStrike()) {
+					// if the current frame isn't a strike than score it, otherwise we need to wait for another bowl.
+					totalPoints += secondToLastFrame.get().getFrameScore() + currentFrame.getFrameScore();
+				}
+				if (thirdToLastFrame.isPresent() && thirdToLastFrame.get().isStrike()) {
+					totalPoints += thirdToLastFrame.get().getFrameScore() + secondToLastFrame.get().getFrameScore() + currentFrame.firstBowl();
+				}
+			}
+		}
 
+		/*
 		if (secondToLastFrame.isPresent() && secondToLastFrame.get().isSpare()) {
 			totalPoints += SPARE_POINTS + getCurrentFrame().firstBowl();
 		} else if (isTurkey()) {
 			totalPoints += STRIKE_POINTS * 3;
 		} else if (isSingleStrike()) {
 			totalPoints += STRIKE_POINTS + getCurrentFrame().getFrameScore();
+		} else if (secondToLastFrame.isPresent() && secondToLastFrame.get().isStrike()
+							&& thirdToLastFrame.isPresent() && thirdToLastFrame.get().isStrike()) {
+								System.out.println("scoring...");
+			totalPoints += STRIKE_POINTS * 2 + getCurrentFrame().firstBowl();
+			totalPoints += STRIKE_POINTS + getCurrentFrame().getFrameScore();
 		}
+		*/
 	}
 
 }
