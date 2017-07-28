@@ -10,7 +10,9 @@ public class Bowling {
 	}
 
 	public Bowling bowl(Integer pinsDown) {
-		if (pinsDown < 0) {
+		if (scoreboard.isGameOver()) {
+			throw new IllegalArgumentException("You cannot bowl more in a completed game.");
+		} else if (pinsDown < 0) {
 			throw new IllegalArgumentException("Cannot knock down negative pins. Bowl again.");
 		}
 		scoreboard.update(pinsDown);
@@ -115,6 +117,14 @@ class Scoreboard {
 
 	public Integer getScore() {
 		return totalPoints;
+	}
+
+	public Boolean isGameOver() {
+		currentFrame = getCurrentFrame();
+		secondToLastFrame = getFrameBefore(currentFrame);
+		return allFrames.size() == 11 && 
+			   !secondToLastFrame.get().isStrike() && 
+			   !secondToLastFrame.get().isSpare();
 	}
 
 	private void addFrame() {
