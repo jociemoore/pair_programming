@@ -93,12 +93,6 @@ class Scoreboard {
 	}
 
 	public void update(Integer pinsDown) {
-		currentFrame = getCurrentFrame();
-		secondToLastFrame = getFrameBefore(currentFrame);
-		if (secondToLastFrame.isPresent()) {
-			thirdToLastFrame = getFrameBefore(secondToLastFrame.get());
-		}
-
 		currentFrame.update(pinsDown);
 
 		if (currentFrame.isStrike()) {
@@ -122,6 +116,10 @@ class Scoreboard {
 	public Boolean isGameOver() {
 		currentFrame = getCurrentFrame();
 		secondToLastFrame = getFrameBefore(currentFrame);
+		if (secondToLastFrame.isPresent()) {
+			thirdToLastFrame = getFrameBefore(secondToLastFrame.get());
+		}
+		
 		return allFrames.size() == 11 && 
 			   !secondToLastFrame.get().isStrike() && 
 			   !secondToLastFrame.get().isSpare();
