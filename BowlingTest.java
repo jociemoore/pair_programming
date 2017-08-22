@@ -145,6 +145,28 @@ public class BowlingTest {
 		}
 	}
 
+	@Test 
+	public void shouldPreventRecordingExtraBowlAfterPerfectGame() throws Exception {
+		bowling.bowl(10)
+			.bowl(10)
+			.bowl(10)
+			.bowl(10)
+			.bowl(10)
+			.bowl(10)
+			.bowl(10)
+			.bowl(10)
+			.bowl(10)
+			.bowl(10)
+			.bowl(10)
+			.bowl(10);
+		try {
+			bowling.bowl(5);
+			fail("IllegalArgumentException should have been thrown.");
+		} catch (IllegalArgumentException iae) {
+			assertEquals("You cannot bowl more in a completed game.", iae.getMessage());
+		}	
+	}
+
 	@Test
 	public void shouldOutputScoreboardFrameByFrame() throws Exception {
 		bowling.bowl(1).bowl(2)

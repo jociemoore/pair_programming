@@ -10,7 +10,9 @@ public class Bowling {
 	}
 
 	public Bowling bowl(Integer pinsDown) {
-		if (pinsDown < 0) {
+		if (scoreboard.isGameOver()) {
+			throw new IllegalArgumentException("You cannot bowl more in a completed game.");
+		} else if (pinsDown < 0) {
 			throw new IllegalArgumentException("Cannot knock down negative pins. Bowl again.");
 		}
 		scoreboard.update(pinsDown);
@@ -91,12 +93,6 @@ class Scoreboard {
 	}
 
 	public void update(Integer pinsDown) {
-		currentFrame = getCurrentFrame();
-		secondToLastFrame = getFrameBefore(currentFrame);
-		if (secondToLastFrame.isPresent()) {
-			thirdToLastFrame = getFrameBefore(secondToLastFrame.get());
-		}
-
 		currentFrame.update(pinsDown);
 
 		if (currentFrame.isStrike()) {
@@ -115,6 +111,16 @@ class Scoreboard {
 
 	public Integer getScore() {
 		return totalPoints;
+	}
+
+	public Boolean isGameOver() {
+		currentFrame = getCurrentFrame();
+		secondToLastFrame = getFrameBefore(currentFrame);
+		if (secondToLastFrame.isPresent()) {
+			thirdToLastFrame = getFrameBefore(secondToLastFrame.get());
+		}
+		
+		return allFrames.size() == 11;
 	}
 
 	private void addFrame() {
@@ -151,6 +157,13 @@ class Scoreboard {
 			   thirdToLastFrame.get().isStrike();
 	}
 
+	private Boolean isDoubleStrike() {
+		return secondToLastFrame.isPresent() && 
+			   secondToLastFrame.get().isStrike() && 
+			   thirdToLastFrame.isPresent() && 
+			   thirdToLastFrame.get().isStrike();
+	}
+
 	private Boolean isSingleStrike() {
 		return secondToLastFrame.isPresent() && 
 		       secondToLastFrame.get().isStrike() && 
@@ -163,35 +176,17 @@ class Scoreboard {
 		if (!currentFrame.isSpare() && !currentFrame.isStrike()) {
 			totalPoints += currentFrame.getFrameScore();
 		}
-		
-		if (secondToLastFrame.isPresent()) {
-			if (secondToLastFrame.get().isSpare()) {
-				totalPoints += secondToLastFrame.get().getFrameScore() + currentFrame.firstBowl();
-			} else if (secondToLastFrame.get().isStrike()) {
-				if (!currentFrame.isStrike()) {
-					// if the current frame isn't a strike than score it, otherwise we need to wait for another bowl.
-					totalPoints += secondToLastFrame.get().getFrameScore() + currentFrame.getFrameScore();
-				}
-				if (thirdToLastFrame.isPresent() && thirdToLastFrame.get().isStrike()) {
-					totalPoints += thirdToLastFrame.get().getFrameScore() + secondToLastFrame.get().getFrameScore() + currentFrame.firstBowl();
-				}
-			}
-		}
 
-		/*
 		if (secondToLastFrame.isPresent() && secondToLastFrame.get().isSpare()) {
 			totalPoints += SPARE_POINTS + getCurrentFrame().firstBowl();
 		} else if (isTurkey()) {
 			totalPoints += STRIKE_POINTS * 3;
-		} else if (isSingleStrike()) {
-			totalPoints += STRIKE_POINTS + getCurrentFrame().getFrameScore();
-		} else if (secondToLastFrame.isPresent() && secondToLastFrame.get().isStrike()
-							&& thirdToLastFrame.isPresent() && thirdToLastFrame.get().isStrike()) {
-								System.out.println("scoring...");
+		} else if (isDoubleStrike()) {
 			totalPoints += STRIKE_POINTS * 2 + getCurrentFrame().firstBowl();
 			totalPoints += STRIKE_POINTS + getCurrentFrame().getFrameScore();
+		} else if (isSingleStrike()) {
+			totalPoints += STRIKE_POINTS + getCurrentFrame().getFrameScore();
 		}
-		*/
 	}
 
 }
