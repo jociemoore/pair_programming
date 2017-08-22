@@ -120,9 +120,7 @@ class Scoreboard {
 			thirdToLastFrame = getFrameBefore(secondToLastFrame.get());
 		}
 		
-		return allFrames.size() == 11 && 
-			   !secondToLastFrame.get().isStrike() && 
-			   !secondToLastFrame.get().isSpare();
+		return allFrames.size() == 11;
 	}
 
 	private void addFrame() {
