@@ -39,6 +39,14 @@ class Frame {
 	public Frame() {
 		frameScores = new Integer[2];
 	}
+	
+	public Frame(boolean finalFrame) {
+		if (finalFrame) {
+			frameScores = new Integer[3];
+		} else {
+			frameScores = new Integer[2];
+		}
+	}
 
 	public void update(Integer pinsDown) {
 		if (frameScores[0] == null) {
@@ -46,6 +54,8 @@ class Frame {
 		}
 		else if (frameScores[1] == null) {
 			frameScores[1] = pinsDown;
+		} else if (frameScores.length == 3 && frameScores[2] == null) {
+			frameScores[2] = pinsDown;
 		}
 	}
 
@@ -54,12 +64,28 @@ class Frame {
 		return totalFrameScore;
 	}
 	
+	public Integer bowlCount() {
+		return frameScores.length;
+	}
+	
 	public Integer firstBowl() {
 		return frameScores[0];
 	}
 
 	public Boolean isFull() {
-		return frameScores[0] != null && frameScores[1] != null ? true : false;
+		if (frameScores.length == 2) {
+			return frameScores[0] != null && frameScores[1] != null;
+		} else if (frameScores.length == 3) {
+			if (frameScores[0] != null && frameScores[1] != null) {
+				if (frameScores[0] + frameScores[1] >= 10) {
+					return frameScores[2] != null;
+				} else {
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 	
 	public Boolean isSpare() {
@@ -71,7 +97,11 @@ class Frame {
 	}
 	
 	public String printFrame() {
-		return String.format("[%d,%d]", frameScores[0], frameScores[1]);
+		if (frameScores.length == 2 || frameScores[2] == null) {
+			return String.format("[%d,%d]", frameScores[0], frameScores[1]);
+		} else {
+			return String.format("[%d,%d,%d]", frameScores[0], frameScores[1], frameScores[2]);
+		}
 	}
 
 }
@@ -95,13 +125,18 @@ class Scoreboard {
 	public void update(Integer pinsDown) {
 		currentFrame.update(pinsDown);
 
-		if (currentFrame.isStrike()) {
+		if (currentFrame.isStrike() && !isFinalFrame()) {
 			currentFrame.update(0);
 		}
 
 		if (currentFrame.isFull()) {
 			updateTotalPoints();
-			addFrame();
+			
+			if (allFrames.size() == 9) {
+				addFrame(true);
+			} else {
+				addFrame();
+			}
 		}
 	}
 	
@@ -118,13 +153,22 @@ class Scoreboard {
 		secondToLastFrame = getFrameBefore(currentFrame);
 		if (secondToLastFrame.isPresent()) {
 			thirdToLastFrame = getFrameBefore(secondToLastFrame.get());
+			return allFrames.size() == 11 && secondToLastFrame.get().isFull();
 		}
 		
-		return allFrames.size() == 11;
+		return false;
 	}
-
+	
+	public Boolean isFinalFrame() {
+		return allFrames.size() >= 10;
+	}
+	
 	private void addFrame() {
-		Frame frame = new Frame();
+		addFrame(false);
+	}
+	
+	private void addFrame(boolean finalFrame) {
+		Frame frame = new Frame(finalFrame);
 		allFrames.add(frame);
 	}
 
