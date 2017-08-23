@@ -166,6 +166,26 @@ public class BowlingTest {
 			assertEquals("You cannot bowl more in a completed game.", iae.getMessage());
 		}	
 	}
+	
+	@Test
+	public void shouldScorePerfectGame() {
+		bowling.bowl(10)
+			.bowl(10)
+			.bowl(10)
+			.bowl(10)
+			.bowl(10)
+			.bowl(10)
+			.bowl(10)
+			.bowl(10)
+			.bowl(10)
+			.bowl(10)
+			.bowl(10)
+			.bowl(10);
+		
+		int score = bowling.score();
+		
+		assertEquals(300, score);
+	}
 
 	@Test
 	public void shouldOutputScoreboardFrameByFrame() throws Exception {
