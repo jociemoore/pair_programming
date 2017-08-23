@@ -64,10 +64,6 @@ class Frame {
 		return totalFrameScore;
 	}
 	
-	public Integer bowlCount() {
-		return frameScores.length;
-	}
-	
 	public Integer firstBowl() {
 		return frameScores[0];
 	}
