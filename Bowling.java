@@ -49,13 +49,13 @@ class Frame {
 	}
 
 	public void update(Integer pinsDown) {
-		if (frameScores[0] == null) {
-			frameScores[0] = pinsDown;
-		}
-		else if (frameScores[1] == null) {
-			frameScores[1] = pinsDown;
-		} else if (frameScores.length == 3 && frameScores[2] == null) {
-			frameScores[2] = pinsDown;
+		int index = 0;
+		while (index < frameScores.length) {
+			if (frameScores[index] == null) {
+				frameScores[index] = pinsDown;
+				break;
+			}
+			index++;
 		}
 	}
 
