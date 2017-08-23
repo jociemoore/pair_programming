@@ -93,11 +93,7 @@ class Frame {
 	}
 	
 	public String printFrame() {
-		if (frameScores.length == 2 || frameScores[2] == null) {
-			return String.format("[%d,%d]", frameScores[0], frameScores[1]);
-		} else {
-			return String.format("[%d,%d,%d]", frameScores[0], frameScores[1], frameScores[2]);
-		}
+		return String.format("[%d,%d]", frameScores[0], frameScores[1]);
 	}
 
 }
