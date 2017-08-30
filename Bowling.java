@@ -39,13 +39,23 @@ class Frame {
 	public Frame() {
 		frameScores = new Integer[2];
 	}
+	
+	public Frame(boolean finalFrame) {
+		if (finalFrame) {
+			frameScores = new Integer[3];
+		} else {
+			frameScores = new Integer[2];
+		}
+	}
 
 	public void update(Integer pinsDown) {
-		if (frameScores[0] == null) {
-			frameScores[0] = pinsDown;
-		}
-		else if (frameScores[1] == null) {
-			frameScores[1] = pinsDown;
+		int index = 0;
+		while (index < frameScores.length) {
+			if (frameScores[index] == null) {
+				frameScores[index] = pinsDown;
+				break;
+			}
+			index++;
 		}
 	}
 
@@ -59,7 +69,19 @@ class Frame {
 	}
 
 	public Boolean isFull() {
-		return frameScores[0] != null && frameScores[1] != null ? true : false;
+		if (frameScores.length == 2) {
+			return frameScores[0] != null && frameScores[1] != null;
+		} else if (frameScores.length == 3) {
+			if (frameScores[0] != null && frameScores[1] != null) {
+				if (frameScores[0] + frameScores[1] >= 10) {
+					return frameScores[2] != null;
+				} else {
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 	
 	public Boolean isSpare() {
@@ -82,9 +104,6 @@ class Scoreboard {
 	private static final int SPARE_POINTS = 10;
 	private List<Frame> allFrames;
 	private Integer totalPoints;
-	private Optional<Frame> secondToLastFrame;
-	private Optional<Frame> thirdToLastFrame;
-	private Frame currentFrame;
 
 	public Scoreboard() {
 		totalPoints = 0;
@@ -93,15 +112,20 @@ class Scoreboard {
 	}
 
 	public void update(Integer pinsDown) {
-		currentFrame.update(pinsDown);
+		currentFrame().update(pinsDown);
 
-		if (currentFrame.isStrike()) {
-			currentFrame.update(0);
+		if (currentFrame().isStrike() && !isFinalFrame()) {
+			currentFrame().update(0);
 		}
 
-		if (currentFrame.isFull()) {
+		if (currentFrame().isFull()) {
 			updateTotalPoints();
-			addFrame();
+			
+			if (allFrames.size() == 9) {
+				addFrame(true);
+			} else {
+				addFrame();
+			}
 		}
 	}
 	
@@ -113,36 +137,42 @@ class Scoreboard {
 		return totalPoints;
 	}
 
-	public Boolean isGameOver() {
-		currentFrame = getCurrentFrame();
-		secondToLastFrame = getFrameBefore(currentFrame);
-		if (secondToLastFrame.isPresent()) {
-			thirdToLastFrame = getFrameBefore(secondToLastFrame.get());
-		}
-		
+	public Boolean isGameOver() {		
 		return allFrames.size() == 11;
 	}
-
+	
+	public Boolean isFinalFrame() {
+		return allFrames.size() >= 10;
+	}
+	
 	private void addFrame() {
-		Frame frame = new Frame();
+		addFrame(false);
+	}
+	
+	private void addFrame(boolean finalFrame) {
+		Frame frame = new Frame(finalFrame);
 		allFrames.add(frame);
 	}
 
-	private Frame getCurrentFrame() {
+	private Frame currentFrame() {
 		int lastIndex = allFrames.size() - 1;
-		Frame currentFrame = allFrames.get(lastIndex);
-		return currentFrame;
+		return allFrames.get(lastIndex);
 	}
-	
-	private Optional<Frame> getFrameBefore(Frame frame) {
-		int currentIndex = allFrames.indexOf(frame);
-		int lastIndex = allFrames.size() - 1;
+
+	private Optional<Frame> secondToLastFrame() {
 		int nextToLastIndex = allFrames.size() - 2;
+
+		if (allFrames.size() > 1) {
+			return Optional.of(allFrames.get(nextToLastIndex));
+		}
+		
+		return Optional.empty();
+	}
+
+	private Optional<Frame> thirdToLastFrame() {
 		int thirdToLastIndex = allFrames.size() - 3;
 
-		if (allFrames.size() > 1 && currentIndex == lastIndex) {
-			return Optional.of(allFrames.get(nextToLastIndex));
-		} else if (allFrames.size() > 2 && currentIndex == nextToLastIndex) {
+		if (allFrames.size() > 2) {
 			return Optional.of(allFrames.get(thirdToLastIndex));
 		}
 		
@@ -150,42 +180,42 @@ class Scoreboard {
 	}
 
 	private Boolean isTurkey() {
-		return currentFrame.isStrike() &&
-			   secondToLastFrame.isPresent() && 
-			   secondToLastFrame.get().isStrike() && 
-			   thirdToLastFrame.isPresent() && 
-			   thirdToLastFrame.get().isStrike();
+		return currentFrame().isStrike() &&
+			   secondToLastFrame().isPresent() && 
+			   secondToLastFrame().get().isStrike() && 
+			   thirdToLastFrame().isPresent() && 
+			   thirdToLastFrame().get().isStrike();
 	}
 
 	private Boolean isDoubleStrike() {
-		return secondToLastFrame.isPresent() && 
-			   secondToLastFrame.get().isStrike() && 
-			   thirdToLastFrame.isPresent() && 
-			   thirdToLastFrame.get().isStrike();
+		return secondToLastFrame().isPresent() && 
+			   secondToLastFrame().get().isStrike() && 
+			   thirdToLastFrame().isPresent() && 
+			   thirdToLastFrame().get().isStrike();
 	}
 
 	private Boolean isSingleStrike() {
-		return secondToLastFrame.isPresent() && 
-		       secondToLastFrame.get().isStrike() && 
-		       !currentFrame.isStrike() &&
-					 (!thirdToLastFrame.isPresent() ||
-					   thirdToLastFrame.isPresent() && !thirdToLastFrame.get().isStrike());
+		return secondToLastFrame().isPresent() && 
+		       secondToLastFrame().get().isStrike() && 
+		       !currentFrame().isStrike() &&
+					 (!thirdToLastFrame().isPresent() ||
+					   thirdToLastFrame().isPresent() && !thirdToLastFrame().get().isStrike());
 	}
 
 	private void updateTotalPoints() {
-		if (!currentFrame.isSpare() && !currentFrame.isStrike()) {
-			totalPoints += currentFrame.getFrameScore();
+		if (!currentFrame().isSpare() && !currentFrame().isStrike()) {
+			totalPoints += currentFrame().getFrameScore();
 		}
 
-		if (secondToLastFrame.isPresent() && secondToLastFrame.get().isSpare()) {
-			totalPoints += SPARE_POINTS + getCurrentFrame().firstBowl();
+		if (secondToLastFrame().isPresent() && secondToLastFrame().get().isSpare()) {
+			totalPoints += SPARE_POINTS + currentFrame().firstBowl();
 		} else if (isTurkey()) {
 			totalPoints += STRIKE_POINTS * 3;
 		} else if (isDoubleStrike()) {
-			totalPoints += STRIKE_POINTS * 2 + getCurrentFrame().firstBowl();
-			totalPoints += STRIKE_POINTS + getCurrentFrame().getFrameScore();
+			totalPoints += STRIKE_POINTS * 2 + currentFrame().firstBowl();
+			totalPoints += STRIKE_POINTS + currentFrame().getFrameScore();
 		} else if (isSingleStrike()) {
-			totalPoints += STRIKE_POINTS + getCurrentFrame().getFrameScore();
+			totalPoints += STRIKE_POINTS + currentFrame().getFrameScore();
 		}
 	}
 
