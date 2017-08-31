@@ -35,6 +35,7 @@ public class Bowling {
 class Frame {
 
 	private Integer[] frameScores;
+	private Integer currentBall;
 
 	public Frame() {
 		frameScores = new Integer[2];
@@ -53,6 +54,7 @@ class Frame {
 		while (index < frameScores.length) {
 			if (frameScores[index] == null) {
 				frameScores[index] = pinsDown;
+				currentBall = index + 1;
 				break;
 			}
 			index++;
@@ -63,10 +65,22 @@ class Frame {
 		Integer totalFrameScore = frameScores[0] + frameScores[1];
 		return totalFrameScore;
 	}
+
+	public Integer currentBall() {
+		return currentBall;
+	}
 	
 	public Integer firstBowl() {
 		return frameScores[0];
 	}
+
+	public Integer secondBowl() {
+		return frameScores[1];
+	}
+
+	public Integer thirdBowl() {
+		return frameScores[2];
+	}		
 
 	public Boolean isFull() {
 		if (frameScores.length == 2) {
@@ -95,7 +109,6 @@ class Frame {
 	public String printFrame() {
 		return String.format("[%d,%d]", frameScores[0], frameScores[1]);
 	}
-
 }
 
 class Scoreboard {
@@ -113,13 +126,13 @@ class Scoreboard {
 
 	public void update(Integer pinsDown) {
 		currentFrame().update(pinsDown);
+		updateTotalPoints();
 
 		if (currentFrame().isStrike() && !isFinalFrame()) {
 			currentFrame().update(0);
 		}
 
 		if (currentFrame().isFull()) {
-			updateTotalPoints();
 			
 			if (allFrames.size() == 9) {
 				addFrame(true);
@@ -196,27 +209,55 @@ class Scoreboard {
 
 	private Boolean isSingleStrike() {
 		return secondToLastFrame().isPresent() && 
-		       secondToLastFrame().get().isStrike() && 
-		       !currentFrame().isStrike() &&
-					 (!thirdToLastFrame().isPresent() ||
-					   thirdToLastFrame().isPresent() && !thirdToLastFrame().get().isStrike());
+		       secondToLastFrame().get().isStrike();
 	}
 
-	private void updateTotalPoints() {
-		if (!currentFrame().isSpare() && !currentFrame().isStrike()) {
-			totalPoints += currentFrame().getFrameScore();
-		}
-
-		if (secondToLastFrame().isPresent() && secondToLastFrame().get().isSpare()) {
+	private void scoreBonusBowls() {
+		if (secondToLastFrame().isPresent() && secondToLastFrame().get().isSpare() && !currentFrame().isFull()) {
 			totalPoints += SPARE_POINTS + currentFrame().firstBowl();
 		} else if (isTurkey()) {
 			totalPoints += STRIKE_POINTS * 3;
-		} else if (isDoubleStrike()) {
+		} else if (isDoubleStrike() && currentFrame().isFull()) {
 			totalPoints += STRIKE_POINTS * 2 + currentFrame().firstBowl();
 			totalPoints += STRIKE_POINTS + currentFrame().getFrameScore();
-		} else if (isSingleStrike()) {
+		} else if (isSingleStrike() && currentFrame().isFull()) {
 			totalPoints += STRIKE_POINTS + currentFrame().getFrameScore();
 		}
 	}
+
+	private void updateTotalPoints() {
+		if (isFinalFrame()) {
+			if (currentFrame().currentBall() == 1) {
+				scoreBonusBowls();
+			} else if (currentFrame().currentBall() == 2) {
+				if (secondToLastFrame().get().isStrike() && currentFrame().firstBowl() == 10 && currentFrame().secondBowl() == 10) {
+					totalPoints += STRIKE_POINTS * 3;
+				} else if (secondToLastFrame().get().isStrike() && currentFrame().firstBowl() == 10 && currentFrame().secondBowl() < 10) {
+					totalPoints += STRIKE_POINTS * 2 + currentFrame().secondBowl();
+				} else if (currentFrame().firstBowl() < 10 && currentFrame().secondBowl() < 10) {
+					totalPoints += currentFrame().getFrameScore();
+				}
+			} else if (currentFrame().currentBall() == 3) {
+				if (currentFrame().firstBowl() == 10 && currentFrame().secondBowl() < 10) {
+					totalPoints += STRIKE_POINTS + currentFrame().secondBowl() + currentFrame().thirdBowl();
+				}
+
+				if (currentFrame().firstBowl() == 10 && currentFrame().secondBowl() == 10 && currentFrame().thirdBowl() == 10) {
+					totalPoints += STRIKE_POINTS * 3;
+				} else if (currentFrame().firstBowl() == 10 && currentFrame().secondBowl() == 10 && currentFrame().thirdBowl() < 10) {
+					totalPoints += STRIKE_POINTS * 2 + currentFrame().thirdBowl();
+				} else if (currentFrame().secondBowl() == 10 && currentFrame().thirdBowl() < 10) {
+					totalPoints += STRIKE_POINTS + currentFrame().thirdBowl();
+				} else if (currentFrame().firstBowl() + currentFrame().secondBowl() == 10) {
+					totalPoints += SPARE_POINTS + currentFrame().thirdBowl();
+				}
+			}
+		} else {
+			scoreBonusBowls();
+			if (currentFrame().isFull() && !currentFrame().isSpare()) {
+				totalPoints += currentFrame().getFrameScore();
+			}
+		}
+	}	
 
 }
