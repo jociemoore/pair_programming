@@ -136,7 +136,7 @@ class Scoreboard {
 			
 			if (allFrames.size() == 9) {
 				addFrame(true);
-			} else {
+			} else if (allFrames.size() < 9) {
 				addFrame();
 			}
 		}
@@ -151,11 +151,11 @@ class Scoreboard {
 	}
 
 	public Boolean isGameOver() {		
-		return allFrames.size() == 11;
+		return isFinalFrame() && currentFrame().isFull();
 	}
 	
 	public Boolean isFinalFrame() {
-		return allFrames.size() >= 10;
+		return allFrames.size() == 10;
 	}
 	
 	private void addFrame() {
