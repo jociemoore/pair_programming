@@ -232,24 +232,10 @@ class Scoreboard {
 			} else if (currentFrame().currentBall() == 2) {
 				if (secondToLastFrame().get().isStrike() && currentFrame().firstBowl() == 10 && currentFrame().secondBowl() == 10) {
 					totalPoints += STRIKE_POINTS * 3;
-				} else if (secondToLastFrame().get().isStrike() && currentFrame().firstBowl() == 10 && currentFrame().secondBowl() < 10) {
-					totalPoints += STRIKE_POINTS * 2 + currentFrame().secondBowl();
-				} else if (currentFrame().firstBowl() < 10 && currentFrame().secondBowl() < 10) {
-					totalPoints += currentFrame().getFrameScore();
 				}
 			} else if (currentFrame().currentBall() == 3) {
-				if (currentFrame().firstBowl() == 10 && currentFrame().secondBowl() < 10) {
-					totalPoints += STRIKE_POINTS + currentFrame().secondBowl() + currentFrame().thirdBowl();
-				}
-
 				if (currentFrame().firstBowl() == 10 && currentFrame().secondBowl() == 10 && currentFrame().thirdBowl() == 10) {
 					totalPoints += STRIKE_POINTS * 3;
-				} else if (currentFrame().firstBowl() == 10 && currentFrame().secondBowl() == 10 && currentFrame().thirdBowl() < 10) {
-					totalPoints += STRIKE_POINTS * 2 + currentFrame().thirdBowl();
-				} else if (currentFrame().secondBowl() == 10 && currentFrame().thirdBowl() < 10) {
-					totalPoints += STRIKE_POINTS + currentFrame().thirdBowl();
-				} else if (currentFrame().firstBowl() + currentFrame().secondBowl() == 10) {
-					totalPoints += SPARE_POINTS + currentFrame().thirdBowl();
 				}
 			}
 		} else {
