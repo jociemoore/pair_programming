@@ -34,19 +34,11 @@ public class Bowling {
 
 class Frame {
 
-	private Integer[] frameScores;
-	private Integer currentBall;
+	protected Integer[] frameScores;
+	protected Integer currentBall;
 
 	public Frame() {
 		frameScores = new Integer[2];
-	}
-	
-	public Frame(boolean finalFrame) {
-		if (finalFrame) {
-			frameScores = new Integer[3];
-		} else {
-			frameScores = new Integer[2];
-		}
 	}
 
 	public void update(Integer pinsDown) {
@@ -83,19 +75,7 @@ class Frame {
 	}		
 
 	public Boolean isFull() {
-		if (frameScores.length == 2) {
-			return frameScores[0] != null && frameScores[1] != null;
-		} else if (frameScores.length == 3) {
-			if (frameScores[0] != null && frameScores[1] != null) {
-				if (frameScores[0] + frameScores[1] >= 10) {
-					return frameScores[2] != null;
-				} else {
-					return true;
-				}
-			}
-		}
-
-		return false;
+		return frameScores[0] != null && frameScores[1] != null;
 	}
 	
 	public Boolean isSpare() {
@@ -109,6 +89,25 @@ class Frame {
 	public String printFrame() {
 		return String.format("[%d,%d]", frameScores[0], frameScores[1]);
 	}
+}
+
+class FinalFrame extends Frame {
+
+	public FinalFrame() {
+		frameScores = new Integer[3];
+	}
+
+	public Boolean isFull() {
+		if (frameScores[0] != null && frameScores[1] != null) {
+			if (frameScores[0] + frameScores[1] >= 10) {
+				return frameScores[2] != null;
+			} else {
+				return true;
+			}
+		}
+		return false;
+	}
+
 }
 
 class Scoreboard {
@@ -135,7 +134,7 @@ class Scoreboard {
 		if (currentFrame().isFull()) {
 			
 			if (allFrames.size() == 9) {
-				addFrame(true);
+				addFinalFrame();
 			} else if (allFrames.size() < 9) {
 				addFrame();
 			}
@@ -155,15 +154,16 @@ class Scoreboard {
 	}
 	
 	public Boolean isFinalFrame() {
-		return allFrames.size() == 10;
+		return currentFrame().getClass().getName() == "FinalFrame";
 	}
 	
 	private void addFrame() {
-		addFrame(false);
+		Frame frame = new Frame();
+		allFrames.add(frame);
 	}
-	
-	private void addFrame(boolean finalFrame) {
-		Frame frame = new Frame(finalFrame);
+
+	private void addFinalFrame() {
+		Frame frame = new FinalFrame();
 		allFrames.add(frame);
 	}
 
