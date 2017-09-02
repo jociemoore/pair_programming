@@ -35,7 +35,6 @@ public class Bowling {
 class Frame {
 
 	protected Integer[] frameScores;
-	protected Integer currentBall;
 
 	public Frame() {
 		frameScores = new Integer[2];
@@ -46,7 +45,6 @@ class Frame {
 		while (index < frameScores.length) {
 			if (frameScores[index] == null) {
 				frameScores[index] = pinsDown;
-				currentBall = index + 1;
 				break;
 			}
 			index++;
@@ -57,35 +55,24 @@ class Frame {
 		Integer totalFrameScore = frameScores[0] + frameScores[1];
 		return totalFrameScore;
 	}
-
-	public Integer currentBall() {
-		return currentBall;
-	}
 	
-	public Integer firstBowl() {
-		return frameScores[0];
+	public Integer getBowl(Integer bowl) {
+		bowl -= 1;
+		return frameScores[bowl];
 	}
-
-	public Integer secondBowl() {
-		return frameScores[1];
-	}
-
-	public Integer thirdBowl() {
-		return frameScores[2];
-	}		
 
 	public Boolean isFull() {
 		return frameScores[0] != null && frameScores[1] != null;
 	}
 	
 	public Boolean isSpare() {
-		return getFrameScore() == 10 && firstBowl() != 10;
+		return getFrameScore() == 10 && getBowl(1) != 10;
 	}
 
 	public Boolean isStrike() {
-		return firstBowl() == 10;
+		return getBowl(1) == 10;
 	}
-	
+
 	public String printFrame() {
 		return String.format("[%d,%d]", frameScores[0], frameScores[1]);
 	}
@@ -97,6 +84,14 @@ class FinalFrame extends Frame {
 		frameScores = new Integer[3];
 	}
 
+	public Integer currentBowl() {
+		int index = 0;
+		while (index < frameScores.length && frameScores[index] != null) {
+			index++;
+		}
+		return index;
+	}	
+
 	public Boolean isFull() {
 		if (frameScores[0] != null && frameScores[1] != null) {
 			if (frameScores[0] + frameScores[1] >= 10) {
@@ -106,6 +101,10 @@ class FinalFrame extends Frame {
 			}
 		}
 		return false;
+	}
+
+	public Boolean isStrike(Integer bowl) {
+		return getBowl(bowl) == 10;
 	}
 
 }
@@ -154,7 +153,7 @@ class Scoreboard {
 	}
 	
 	public Boolean isFinalFrame() {
-		return currentFrame().getClass().getName() == "FinalFrame";
+		return currentFrame() instanceof FinalFrame;
 	}
 	
 	private void addFrame() {
@@ -214,11 +213,11 @@ class Scoreboard {
 
 	private void scoreBonusBowls() {
 		if (secondToLastFrame().isPresent() && secondToLastFrame().get().isSpare() && !currentFrame().isFull()) {
-			totalPoints += SPARE_POINTS + currentFrame().firstBowl();
+			totalPoints += SPARE_POINTS + currentFrame().getBowl(1);
 		} else if (isTurkey()) {
 			totalPoints += STRIKE_POINTS * 3;
 		} else if (isDoubleStrike() && currentFrame().isFull()) {
-			totalPoints += STRIKE_POINTS * 2 + currentFrame().firstBowl();
+			totalPoints += STRIKE_POINTS * 2 + currentFrame().getBowl(1);
 			totalPoints += STRIKE_POINTS + currentFrame().getFrameScore();
 		} else if (isSingleStrike() && currentFrame().isFull()) {
 			totalPoints += STRIKE_POINTS + currentFrame().getFrameScore();
@@ -227,14 +226,15 @@ class Scoreboard {
 
 	private void updateTotalPoints() {
 		if (isFinalFrame()) {
-			if (currentFrame().currentBall() == 1) {
+			FinalFrame finalFrame = (FinalFrame) currentFrame();
+			if (finalFrame.currentBowl() == 1) {
 				scoreBonusBowls();
-			} else if (currentFrame().currentBall() == 2) {
-				if (secondToLastFrame().get().isStrike() && currentFrame().firstBowl() == 10 && currentFrame().secondBowl() == 10) {
+			} else if (finalFrame.currentBowl() == 2) {
+				if (secondToLastFrame().get().isStrike() && finalFrame.isStrike(1) && finalFrame.isStrike(2)) {
 					totalPoints += STRIKE_POINTS * 3;
 				}
-			} else if (currentFrame().currentBall() == 3) {
-				if (currentFrame().firstBowl() == 10 && currentFrame().secondBowl() == 10 && currentFrame().thirdBowl() == 10) {
+			} else if (finalFrame.currentBowl() == 3) {
+				if (finalFrame.isStrike(1) && finalFrame.isStrike(2) && finalFrame.isStrike(3)) {
 					totalPoints += STRIKE_POINTS * 3;
 				}
 			}
