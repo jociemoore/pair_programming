@@ -12,7 +12,7 @@ public class BowlingTest {
 	public void setup() {
 		bowling = new Bowling();
 	}
-
+	
 	@Test
 	public void shouldOutputAScoreGivenOneFrame() throws Exception {
 		bowling.bowl(2);
@@ -20,7 +20,7 @@ public class BowlingTest {
 		int score = bowling.score();
 		assertEquals(5, score);
 	}
-
+	
 	@Test
 	public void shouldOutputScoreForEmptyGame() throws Exception {
 		bowling.bowl(0).bowl(0)
@@ -37,7 +37,7 @@ public class BowlingTest {
 		int score = bowling.score();
 		assertEquals(0, score);
 	}
-
+	
 	@Test
 	public void shouldThrowIllegalArgumentExceptionWhenPinsDownIsNegative() throws Exception {
 		try {
@@ -48,7 +48,7 @@ public class BowlingTest {
 			assertEquals(message, iae.getMessage());
 		}
 	}
-		
+			
 	@Test
 	public void shouldNotTotalScoreForAFrameWithASpare() throws Exception {
 		bowling.bowl(5).bowl(5);
@@ -57,7 +57,7 @@ public class BowlingTest {
 		
 		assertEquals(0, score);
 	}
-
+	
 	@Test
 	public void shouldOutputScoreOfPreviousFramesAfterASpare() throws Exception {
 		bowling.bowl(2).bowl(7)
@@ -68,7 +68,7 @@ public class BowlingTest {
 
 		assertEquals(15, score);
 	}
-
+	
 	@Test
 	public void shouldIncludeSpareScoreAfterNextNonSpareNonStrikeFrame() throws Exception {
 		bowling.bowl(3).bowl(5)
@@ -79,7 +79,7 @@ public class BowlingTest {
 
 		assertEquals(26, score);
 	}
-	
+		
 	@Test
 	public void shouldOutputScoreOfPreviousFramesAfterAStrike() throws Exception {
 		bowling.bowl(4).bowl(2)
@@ -89,7 +89,7 @@ public class BowlingTest {
 		
 		assertEquals(6, score);
 	}
-	
+		
 	@Test
 	public void shouldScoreStrikeFrameAfterNextTwoBallsForSingleFrame() throws Exception {
 		bowling.bowl(4).bowl(2)
@@ -100,7 +100,7 @@ public class BowlingTest {
 		
 		assertEquals(28, score);
 	}
-	
+		
 	@Test
 	public void shouldScoreStrikeAfterNextTwoStrikes() throws Exception {
 		bowling.bowl(10)
@@ -111,7 +111,7 @@ public class BowlingTest {
 		
 		assertEquals(30, score);
 	}
-
+	
 	@Test
 	public void shouldScoreTwoStrikesAfterNonSpareNonStrikeFrame() throws Exception {
 		bowling.bowl(10)
@@ -123,7 +123,7 @@ public class BowlingTest {
 		
 		assertEquals(45, score);
 	}
-	
+		
 	@Test
 	public void shouldPreventRecordingExtraBowlsAtEndOfGame() throws Exception {
 		bowling.bowl(1).bowl(2)
@@ -145,6 +145,26 @@ public class BowlingTest {
 		}
 	}
 
+	@Test
+	public void shouldScoreAllSpares() throws Exception {
+		bowling.bowl(5).bowl(5)
+			.bowl(5).bowl(5)
+			.bowl(5).bowl(5)
+			.bowl(5).bowl(5)
+			.bowl(5).bowl(5)
+			.bowl(5).bowl(5)
+			.bowl(5).bowl(5)
+			.bowl(5).bowl(5)
+			.bowl(5).bowl(5)
+			.bowl(5).bowl(5)
+			.bowl(5);
+
+			int score = bowling.score();
+
+			assertEquals(150, score);
+
+	}
+	
 	@Test 
 	public void shouldPreventRecordingExtraBowlAfterPerfectGame() throws Exception {
 		bowling.bowl(10)
@@ -186,7 +206,7 @@ public class BowlingTest {
 		
 		assertEquals(300, score);
 	}
-
+	
 	@Test
 	public void shouldOutputScoreboardFrameByFrame() throws Exception {
 		bowling.bowl(1).bowl(2)
