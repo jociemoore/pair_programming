@@ -90,7 +90,12 @@ class FinalFrame extends Frame {
 			index++;
 		}
 		return index;
-	}	
+	}
+	
+	public Integer getFrameScore() {
+		Integer totalFrameScore = frameScores[0] + frameScores[1] + frameScores[2];
+		return totalFrameScore;
+	}
 
 	public Boolean isFull() {
 		if (frameScores[0] != null && frameScores[1] != null) {
@@ -101,6 +106,10 @@ class FinalFrame extends Frame {
 			}
 		}
 		return false;
+	}
+	
+	public Boolean isSpare() {
+		return !isStrike(1) && (frameScores[0] + frameScores[1] == 10);
 	}
 
 	public Boolean isStrike(Integer bowl) {
@@ -236,6 +245,8 @@ class Scoreboard {
 			} else if (finalFrame.currentBowl() == 3) {
 				if (finalFrame.isStrike(1) && finalFrame.isStrike(2) && finalFrame.isStrike(3)) {
 					totalPoints += STRIKE_POINTS * 3;
+				} else if (finalFrame.isSpare()) {
+					totalPoints += finalFrame.getFrameScore();
 				}
 			}
 		} else {
