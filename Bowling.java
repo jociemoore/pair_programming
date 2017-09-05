@@ -181,22 +181,21 @@ class Scoreboard {
 	}
 
 	private Optional<Frame> secondToLastFrame() {
-		int nextToLastIndex = allFrames.size() - 2;
+		int secondToLastIndex = allFrames.size() - 2;
 
-		if (allFrames.size() > 1) {
-			return Optional.of(allFrames.get(nextToLastIndex));
-		}
-		
-		return Optional.empty();
+		return getFrameByIndex(secondToLastIndex);
 	}
 
 	private Optional<Frame> thirdToLastFrame() {
 		int thirdToLastIndex = allFrames.size() - 3;
 
-		if (allFrames.size() > 2) {
-			return Optional.of(allFrames.get(thirdToLastIndex));
+		return getFrameByIndex(thirdToLastIndex);
+	}
+	
+	private Optional<Frame> getFrameByIndex(int index) {
+		if (index >= 0) {
+			return Optional.of(allFrames.get(index));
 		}
-		
 		return Optional.empty();
 	}
 
