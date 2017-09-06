@@ -223,7 +223,30 @@ public class BowlingTest {
 		
 		assertEquals(300, score);
 	}
-	
+
+	@Test
+	public void shouldOutputScoreboardFrameByFrameWithForPerfectGame() throws Exception {
+		bowling.bowl(10)
+			.bowl(10)
+			.bowl(10)
+			.bowl(10)
+			.bowl(10)
+			.bowl(10)
+			.bowl(10)
+			.bowl(10)
+			.bowl(10)
+			.bowl(10)
+			.bowl(10)
+			.bowl(10);
+
+			String expectedScoreboard =
+				"|10,0|10,0|10,0|10,0|10,0|10,0|10,0|10,0|10,0|10,10,10|\n" +
+				"| 30| 60| 90|120|150|180|210|240|270|300|";
+			String actualScoreboard = bowling.printScoreboard();
+
+			assertEquals(expectedScoreboard, actualScoreboard);
+	}
+
 	@Test
 	public void shouldOutputScoreboardFrameByFrame() throws Exception {
 		bowling.bowl(1).bowl(2)
@@ -237,12 +260,12 @@ public class BowlingTest {
 			.bowl(3).bowl(2)
 			.bowl(1).bowl(0);
 
-			String expectedScoreboard =
+		String expectedScoreboard = 
 				"|1,2|3,4|5,4|3,2|1,0|1,2|3,4|5,4|3,2|1,0|\n" +
 				"|  3| 10| 19| 24| 25| 28| 35| 44| 49| 50|";
-			String actualScoreboard = bowling.printScoreboard();
+		String actualScoreboard = bowling.printScoreboard();
 
-			assertEquals(expectedScoreboard, actualScoreboard);
+		assertEquals(expectedScoreboard, actualScoreboard);
 	}
 
 }
