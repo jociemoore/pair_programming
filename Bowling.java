@@ -24,10 +24,16 @@ public class Bowling {
 	}
 
 	public String printScoreboard() {
-		return scoreboard.getFrames().stream()
+		String pinsDown = scoreboard.getFrames().stream()
 			.filter(Frame::isFull)
 			.map(Frame::printFrame)
-			.collect(Collectors.joining(","));
+			.collect(Collectors.joining("|"));
+
+		String scores = scoreboard.getAllTotals().stream()
+			.map(s -> String.format("%3s", s))
+			.collect(Collectors.joining("|"));
+
+		return String.format("|%s|\n|%s|", pinsDown, scores);
 	}
 
 }
@@ -74,7 +80,7 @@ class Frame {
 	}
 
 	public String printFrame() {
-		return String.format("[%d,%d]", frameScores[0], frameScores[1]);
+		return String.format("%d,%d", frameScores[0], frameScores[1]);
 	}
 }
 
@@ -93,7 +99,10 @@ class FinalFrame extends Frame {
 	}
 	
 	public Integer getFrameScore() {
-		Integer totalFrameScore = frameScores[0] + frameScores[1] + frameScores[2];
+		Integer totalFrameScore = frameScores[0] + frameScores[1];
+		if (frameScores[2] != null) {
+			totalFrameScore += frameScores[2];
+		}
 		return totalFrameScore;
 	}
 
@@ -123,11 +132,13 @@ class Scoreboard {
 	private static final int STRIKE_POINTS = 10;
 	private static final int SPARE_POINTS = 10;
 	private List<Frame> allFrames;
+	private List<Integer> allTotals;
 	private Integer totalPoints;
 
 	public Scoreboard() {
 		totalPoints = 0;
 		allFrames = new ArrayList<>();
+		allTotals = new ArrayList<>();
 		addFrame();
 	}
 
@@ -140,7 +151,8 @@ class Scoreboard {
 		}
 
 		if (currentFrame().isFull()) {
-			
+			allTotals.add(totalPoints);
+
 			if (allFrames.size() == 9) {
 				addFinalFrame();
 			} else if (allFrames.size() < 9) {
@@ -154,7 +166,11 @@ class Scoreboard {
 	}
 
 	public Integer getScore() {
-		return totalPoints;
+ 		return totalPoints;
+	}
+
+	public List<Integer> getAllTotals() {
+		return Collections.unmodifiableList(allTotals);
 	}
 
 	public Boolean isGameOver() {		
@@ -240,6 +256,8 @@ class Scoreboard {
 			} else if (finalFrame.currentBowl() == 2) {
 				if (secondToLastFrame().get().isStrike() && finalFrame.isStrike(1) && finalFrame.isStrike(2)) {
 					totalPoints += STRIKE_POINTS * 3;
+				} else if (finalFrame.getFrameScore() < 10) {
+					totalPoints += finalFrame.getFrameScore();
 				}
 			} else if (finalFrame.currentBowl() == 3) {
 				if (finalFrame.isStrike(1) && finalFrame.isStrike(2) && finalFrame.isStrike(3)) {
@@ -255,5 +273,4 @@ class Scoreboard {
 			}
 		}
 	}	
-
 }
