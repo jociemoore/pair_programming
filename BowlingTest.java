@@ -267,5 +267,27 @@ public class BowlingTest {
 
 		assertEquals(expectedScoreboard, actualScoreboard);
 	}
+	
+	@Test
+	public void shouldOutputScoreboardForSparefulGame() throws Exception {
+		bowling.bowl(5).bowl(5)
+			.bowl(0).bowl(10)
+			.bowl(2).bowl(8)
+			.bowl(4).bowl(6)
+			.bowl(6).bowl(4)
+			.bowl(8).bowl(2)
+			.bowl(9).bowl(1)
+			.bowl(7).bowl(3)
+			.bowl(3).bowl(7)
+			.bowl(1).bowl(9)
+			.bowl(5);
+
+		String expectedScoreboard =
+			"|5,5|0,10|2,8|4,6|6,4|8,2|9,1|7,3|3,7|1,9,5|\n" +
+			"| 10| 22| 36| 52| 70| 89|107|120|131|146|";
+		String actualScoreboard = bowling.printScoreboard();
+
+		assertEquals(expectedScoreboard, actualScoreboard);
+	}
 
 }
