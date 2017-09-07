@@ -136,13 +136,11 @@ class Scoreboard {
 	private static final int STRIKE_POINTS = 10;
 	private static final int SPARE_POINTS = 10;
 	private List<Frame> allFramesList;
-	private List<Integer> allPointsList;
 	private Integer totalPoints;
 
 	public Scoreboard() {
 		totalPoints = 0;
 		allFramesList = new ArrayList<>();
-		allPointsList = new ArrayList<>();
 		addFrame();
 	}
 
@@ -155,8 +153,6 @@ class Scoreboard {
 		}
 
 		if (currentFrame().isFull()) {
-			allPointsList.add(totalPoints);
-
 			if (!isFinalFrame()) {
 				if (allFramesList.size() == 9) {
 					addFinalFrame();
@@ -173,10 +169,6 @@ class Scoreboard {
 
 	public Integer getScore() {
  		return totalPoints;
-	}
-
-	public List<Integer> getPointsList() {
-		return Collections.unmodifiableList(allPointsList);
 	}
 
 	public Boolean isGameOver() {		
