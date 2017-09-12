@@ -85,6 +85,16 @@ class Frame {
 	}
 
 	public String printFrame() {
+		if (isStrike()) {
+			return " X ";
+		} else if (isSpare()) {
+			return String.format("%d,/", allBowls[0]);
+		} else {
+			return printBasicFrame();
+		}
+	}
+	
+	protected String printBasicFrame() {
 		return Arrays.stream(allBowls)
 			.filter(Objects::nonNull)
 			.map(String::valueOf)
@@ -129,6 +139,25 @@ class FinalFrame extends Frame {
 		return getPinsDownOnBowl(bowl) == 10;
 	}
 
+	public String printFrame() {
+		List<String> bowlStrings = new ArrayList<>();
+		int index = 0;
+		while (index < allBowls.length) {
+			if (allBowls[index] == null) {
+				break;
+			}
+			if (allBowls[index] == 10) {
+				bowlStrings.add("X");
+			} else if ((index == 1) && ((allBowls[index] + allBowls[index-1]) == 10)) {
+				bowlStrings.add("/");
+			} else {
+				bowlStrings.add(String.valueOf(allBowls[index]));
+			}
+			index++;
+		}
+		
+		return String.join(",", bowlStrings);
+	}
 }
 
 class Scoreboard {
