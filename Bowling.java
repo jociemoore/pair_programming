@@ -236,6 +236,7 @@ class Scoreboard {
 	private void scoreBonusBowls() {
 		if (secondToLastFrame().isPresent() && secondToLastFrame().get().isSpare() && !currentFrame().isFull()) {
 			totalPoints += SPARE_POINTS + currentFrame().getPinsDownOnBowl(1);
+			secondToLastFrame().get().setTotalScoreAtFrame(totalPoints);
 		} else if (isTurkey()) {
 			totalPoints += STRIKE_POINTS * 3;
 			thirdToLastFrame().get().setTotalScoreAtFrame(totalPoints);
@@ -266,6 +267,7 @@ class Scoreboard {
 					currentFrame().setTotalScoreAtFrame(totalPoints);
 				} else if (finalFrame.isSpare()) {
 					totalPoints += finalFrame.getTotalPinsDown();
+					currentFrame().setTotalScoreAtFrame(totalPoints);
 				}
 			}
 		} else {
