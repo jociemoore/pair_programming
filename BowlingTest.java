@@ -284,7 +284,7 @@ public class BowlingTest {
 
 		String expectedScoreboard =
 			"|5,5|0,10|2,8|4,6|6,4|8,2|9,1|7,3|3,7|1,9,5|\n" +
-			"| 10| 22| 36| 52| 70| 89|107|120|131|146|";
+			"| 10| 22| 36| 52| 70| 89|106|119|130|145|";
 		String actualScoreboard = bowling.printScoreboard();
 
 		assertEquals(expectedScoreboard, actualScoreboard);
