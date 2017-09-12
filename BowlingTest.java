@@ -240,8 +240,9 @@ public class BowlingTest {
 			.bowl(10);
 
 			String expectedScoreboard =
-				"|10,0|10,0|10,0|10,0|10,0|10,0|10,0|10,0|10,0|10,10,10|\n" +
+				"| X | X | X | X | X | X | X | X | X |X,X,X|\n" +
 				"| 30| 60| 90|120|150|180|210|240|270|300|";
+
 			String actualScoreboard = bowling.printScoreboard();
 
 			assertEquals(expectedScoreboard, actualScoreboard);
@@ -283,8 +284,8 @@ public class BowlingTest {
 			.bowl(5);
 
 		String expectedScoreboard =
-			"|5,5|0,10|2,8|4,6|6,4|8,2|9,1|7,3|3,7|1,9,5|\n" +
-			"| 10| 22| 36| 52| 70| 89|107|120|131|146|";
+			"|5,/|0,/|2,/|4,/|6,/|8,/|9,/|7,/|3,/|1,/,5|\n" +
+			"| 10| 22| 36| 52| 70| 89|106|119|130|145|";
 		String actualScoreboard = bowling.printScoreboard();
 
 		assertEquals(expectedScoreboard, actualScoreboard);
