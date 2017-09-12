@@ -77,7 +77,7 @@ class Frame {
 	}
 	
 	public Boolean isSpare() {
-		return getTotalPinsDown() == 10 && getPinsDownOnBowl(1) != 10;
+		return !isStrike() && getTotalPinsDown() == 10;
 	}
 
 	public Boolean isStrike() {
