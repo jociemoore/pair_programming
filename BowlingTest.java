@@ -290,5 +290,19 @@ public class BowlingTest {
 
 		assertEquals(expectedScoreboard, actualScoreboard);
 	}
+	
+	@Test
+	public void shouldOutputScoreboardForPartialGame() throws Exception {
+		bowling.bowl(5).bowl(2)
+			.bowl(7).bowl(3)
+			.bowl(8);
+		
+		String expectedScoreboard =
+			"|5,2|7,/|8, |\n" +
+			"|  7| 25|   |";
+		String actualScoreboard = bowling.printScoreboard();
+		
+		assertEquals(expectedScoreboard, actualScoreboard);
+	}
 
 }
