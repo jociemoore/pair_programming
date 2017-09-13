@@ -43,9 +43,6 @@ class Frame {
 	List<Integer> allBowls = new ArrayList<>();
 	Integer totalScoreAtFrame;
 
-	public Frame() {
-	}
-
 	public void update(Integer pinsDown) {
 		allBowls.add(pinsDown);
 	}
@@ -97,9 +94,6 @@ class Frame {
 }
 
 class FinalFrame extends Frame {
-
-	public FinalFrame() {
-	}
 
 	public Integer currentBowl() {
 		return allBowls.size();
