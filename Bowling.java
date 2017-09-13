@@ -56,7 +56,6 @@ class Frame {
 
 	public Integer getTotalPinsDown() {
 		return allBowls.stream()
-			.filter(Objects::nonNull)
 			.reduce(0, Integer::sum);
 	}
 	
@@ -88,7 +87,6 @@ class Frame {
 	
 	protected String printBasicFrame() {
 		return allBowls.stream()
-			.filter(Objects::nonNull)
 			.map(String::valueOf)
 			.collect(Collectors.joining(","));
 	}
@@ -104,11 +102,7 @@ class FinalFrame extends Frame {
 	}
 
 	public Integer currentBowl() {
-		int index = 0;
-		while (index < allBowls.size() && allBowls.get(index) != null) {
-			index++;
-		}
-		return index;
+		return allBowls.size();
 	}
 
 	public Boolean isFull() {
@@ -134,9 +128,6 @@ class FinalFrame extends Frame {
 		List<String> bowlStrings = new ArrayList<>();
 		int index = 0;
 		while (index < allBowls.size()) {
-			if (allBowls.get(index) == null) {
-				break;
-			}
 			if (allBowls.get(index) == 10) {
 				bowlStrings.add("X");
 			} else if ((index == 1) && ((allBowls.get(index) + allBowls.get(index-1)) == 10)) {
