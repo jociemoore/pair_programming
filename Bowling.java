@@ -83,8 +83,8 @@ class Frame {
 	
 	protected String printBasicFrame() {
 		String output = allBowls.stream()
-						 		.map(String::valueOf)
-						 		.collect(Collectors.joining(","));
+			.map(String::valueOf)
+			.collect(Collectors.joining(","));
 
 		return isFull() ? output : String.format("%s, ", output);
 	}
