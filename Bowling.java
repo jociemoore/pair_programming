@@ -40,22 +40,11 @@ public class Bowling {
 
 class Frame {
 
-	Integer[] allBowls;
+	List<Integer> allBowls = new ArrayList<>();
 	Integer totalScoreAtFrame;
 
-	public Frame() {
-		allBowls = new Integer[2];
-	}
-
 	public void update(Integer pinsDown) {
-		int index = 0;
-		while (index < allBowls.length) {
-			if (allBowls[index] == null) {
-				allBowls[index] = pinsDown;
-				break;
-			}
-			index++;
-		}
+		allBowls.add(pinsDown);
 	}
 	
 	public void setTotalScoreAtFrame(Integer totalScoreAtFrame) {
@@ -63,21 +52,20 @@ class Frame {
 	}
 
 	public Integer getTotalPinsDown() {
-		return Arrays.stream(allBowls)
-			.filter(Objects::nonNull)
+		return allBowls.stream()
 			.reduce(0, Integer::sum);
 	}
 	
 	public Integer getPinsDownOnBowl(Integer bowl) {
-		return allBowls[bowl - 1];
+		return allBowls.get(bowl - 1);
 	}
 
 	public Boolean isFull() {
-		return allBowls[0] != null && allBowls[1] != null;
+		return allBowls.size() == 2;
 	}
 	
 	public Boolean isSpare() {
-		return getTotalPinsDown() == 10 && getPinsDownOnBowl(1) != 10;
+		return !isStrike() && getTotalPinsDown() == 10;
 	}
 
 	public Boolean isStrike() {
@@ -85,8 +73,17 @@ class Frame {
 	}
 
 	public String printFrame() {
-		return Arrays.stream(allBowls)
-			.filter(Objects::nonNull)
+		if (isStrike()) {
+			return " X ";
+		} else if (isSpare()) {
+			return String.format("%d,/", allBowls.get(0));
+		} else {
+			return printBasicFrame();
+		}
+	}
+	
+	protected String printBasicFrame() {
+		return allBowls.stream()
 			.map(String::valueOf)
 			.collect(Collectors.joining(","));
 	}
@@ -98,22 +95,14 @@ class Frame {
 
 class FinalFrame extends Frame {
 
-	public FinalFrame() {
-		allBowls = new Integer[3];
-	}
-
 	public Integer currentBowl() {
-		int index = 0;
-		while (index < allBowls.length && allBowls[index] != null) {
-			index++;
-		}
-		return index;
+		return allBowls.size();
 	}
 
 	public Boolean isFull() {
-		if (allBowls[0] != null && allBowls[1] != null) {
-			if (allBowls[0] + allBowls[1] >= 10) {
-				return allBowls[2] != null;
+		if (allBowls.size() >= 2) {
+			if (allBowls.get(0) + allBowls.get(1) >= 10) {
+				return allBowls.size() == 3;
 			} else {
 				return true;
 			}
@@ -122,13 +111,29 @@ class FinalFrame extends Frame {
 	}
 	
 	public Boolean isSpare() {
-		return !isStrike(1) && (allBowls[0] + allBowls[1] == 10);
+		return !isStrike(1) && (allBowls.get(0) + allBowls.get(1) == 10);
 	}
 
 	public Boolean isStrike(Integer bowl) {
 		return getPinsDownOnBowl(bowl) == 10;
 	}
 
+	public String printFrame() {
+		List<String> bowlStrings = new ArrayList<>();
+		int index = 0;
+		while (index < allBowls.size()) {
+			if (allBowls.get(index) == 10) {
+				bowlStrings.add("X");
+			} else if ((index == 1) && ((allBowls.get(index) + allBowls.get(index-1)) == 10)) {
+				bowlStrings.add("/");
+			} else {
+				bowlStrings.add(String.valueOf(allBowls.get(index)));
+			}
+			index++;
+		}
+		
+		return String.join(",", bowlStrings);
+	}
 }
 
 class Scoreboard {
