@@ -326,4 +326,26 @@ public class BowlingTest {
 		assertEquals(expectedScoreboard, actualScoreboard);
 	}
 
+	@Test
+	public void shouldOutputScoreboardForNotQuitePerfectGame() throws Exception {
+		bowling.bowl(10)
+			.bowl(10)
+			.bowl(10)
+			.bowl(10)
+			.bowl(10)
+			.bowl(10)
+			.bowl(10)
+			.bowl(10)
+			.bowl(10)
+			.bowl(10)
+			.bowl(10)
+			.bowl(9);
+
+		String expectedScoreboard =
+			"| X | X | X | X | X | X | X | X | X |X,X,9|\n" +
+			"| 30| 60| 90|120|150|180|210|240|270|299|";
+		String actualScoreboard = bowling.printScoreboard();
+		assertEquals(expectedScoreboard, actualScoreboard);
+	}
+
 }
