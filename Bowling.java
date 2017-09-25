@@ -133,6 +133,10 @@ class FinalFrame extends Frame {
 			index++;
 		}
 		
+		if (!isFull()) {
+			bowlStrings.add(" ");
+		}
+		
 		return String.join(",", bowlStrings);
 	}
 }
@@ -262,6 +266,9 @@ class Scoreboard {
 			} else if (finalFrame.currentBowl() == 2) {
 				if (secondToLastFrame().get().isStrike() && finalFrame.isStrike(1) && finalFrame.isStrike(2)) {
 					totalPoints += STRIKE_POINTS * 3;
+					secondToLastFrame().get().setTotalScoreAtFrame(totalPoints);
+				} else if (secondToLastFrame().get().isStrike()) {
+					totalPoints += secondToLastFrame().get().getTotalPinsDown() + finalFrame.getTotalPinsDown();
 					secondToLastFrame().get().setTotalScoreAtFrame(totalPoints);
 				} else if (finalFrame.getTotalPinsDown() < 10) {
 					totalPoints += finalFrame.getTotalPinsDown();
