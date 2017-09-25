@@ -25,7 +25,6 @@ public class Bowling {
 
 	public String printScoreboard() {
 		String pinsDownRecord = scoreboard.getFrames().stream()
-			.filter(Frame::isFull)
 			.map(Frame::printFrame)
 			.collect(Collectors.joining("|"));
 
@@ -83,9 +82,11 @@ class Frame {
 	}
 	
 	protected String printBasicFrame() {
-		return allBowls.stream()
+		String output = allBowls.stream()
 			.map(String::valueOf)
 			.collect(Collectors.joining(","));
+
+		return isFull() ? output : String.format("%s, ", output);
 	}
 	
 	public String printScore() {
