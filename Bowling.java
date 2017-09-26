@@ -123,10 +123,10 @@ class FinalFrame extends Frame {
 		List<String> bowlStrings = new ArrayList<>();
 		int index = 0;
 		while (index < allBowls.size()) {
-			if (allBowls.get(index) == 10) {
-				bowlStrings.add("X");
-			} else if ((index == 1) && ((allBowls.get(index) + allBowls.get(index-1)) == 10)) {
+			if ((index == 1) && ((allBowls.get(index) + allBowls.get(index-1)) == 10)) {
 				bowlStrings.add("/");
+			} else if (allBowls.get(index) == 10) {
+				bowlStrings.add("X");
 			} else {
 				bowlStrings.add(String.valueOf(allBowls.get(index)));
 			}
@@ -243,6 +243,8 @@ class Scoreboard {
 		       secondToLastFrame().get().isStrike();
 	}
 
+
+
 	private void scoreBonusBowls() {
 		if (secondToLastFrame().isPresent() && secondToLastFrame().get().isSpare() && !currentFrame().isFull()) {
 			totalPoints += SPARE_POINTS + currentFrame().getPinsDownOnBowl(1);
@@ -251,8 +253,11 @@ class Scoreboard {
 			totalPoints += STRIKE_POINTS * 3;
 			thirdToLastFrame().get().setTotalScoreAtFrame(totalPoints);
 		} else if (isDoubleStrike() && currentFrame().isFull()) {
-			totalPoints += STRIKE_POINTS * 2 + currentFrame().getPinsDownOnBowl(1);
 			totalPoints += STRIKE_POINTS + currentFrame().getTotalPinsDown();
+			secondToLastFrame().get().setTotalScoreAtFrame(totalPoints);
+		} else if (isDoubleStrike()) {
+			totalPoints += STRIKE_POINTS * 2 + currentFrame().getPinsDownOnBowl(1);
+			thirdToLastFrame().get().setTotalScoreAtFrame(totalPoints);
 		} else if (isSingleStrike() && currentFrame().isFull()) {
 			totalPoints += STRIKE_POINTS + currentFrame().getTotalPinsDown();
 		}
