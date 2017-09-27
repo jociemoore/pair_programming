@@ -243,23 +243,23 @@ class Scoreboard {
 		       secondToLastFrame().get().isStrike();
 	}
 
-
-
 	private void scoreBonusBowls() {
-		if (secondToLastFrame().isPresent() && secondToLastFrame().get().isSpare() && !currentFrame().isFull()) {
-			totalPoints += SPARE_POINTS + currentFrame().getPinsDownOnBowl(1);
-			secondToLastFrame().get().setTotalScoreAtFrame(totalPoints);
-		} else if (isTurkey()) {
-			totalPoints += STRIKE_POINTS * 3;
-			thirdToLastFrame().get().setTotalScoreAtFrame(totalPoints);
-		} else if (isDoubleStrike() && currentFrame().isFull()) {
-			totalPoints += STRIKE_POINTS + currentFrame().getTotalPinsDown();
-			secondToLastFrame().get().setTotalScoreAtFrame(totalPoints);
-		} else if (isDoubleStrike()) {
-			totalPoints += STRIKE_POINTS * 2 + currentFrame().getPinsDownOnBowl(1);
-			thirdToLastFrame().get().setTotalScoreAtFrame(totalPoints);
-		} else if (isSingleStrike() && currentFrame().isFull()) {
-			totalPoints += STRIKE_POINTS + currentFrame().getTotalPinsDown();
+		if (currentFrame().isFull()) {
+			if (isTurkey()) {
+				totalPoints += STRIKE_POINTS * 3;
+				thirdToLastFrame().get().setTotalScoreAtFrame(totalPoints);
+			} else if (isSingleStrike()) {
+				totalPoints += STRIKE_POINTS + currentFrame().getTotalPinsDown();
+				secondToLastFrame().get().setTotalScoreAtFrame(totalPoints);
+			}
+		} else {
+			if (secondToLastFrame().isPresent() && secondToLastFrame().get().isSpare()) {
+				totalPoints += SPARE_POINTS + currentFrame().getPinsDownOnBowl(1);
+				secondToLastFrame().get().setTotalScoreAtFrame(totalPoints);
+			} else if (isDoubleStrike()) {
+				totalPoints += STRIKE_POINTS * 2 + currentFrame().getPinsDownOnBowl(1);
+				thirdToLastFrame().get().setTotalScoreAtFrame(totalPoints);
+			}
 		}
 	}
 
