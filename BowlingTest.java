@@ -370,4 +370,29 @@ public class BowlingTest {
 		assertEquals(expectedScoreboard, actualScoreboard);
 	}
 
+	@Test
+	public void shouldScoreRandomGame() {
+		bowling.bowl(10)
+			.bowl(5)
+			.bowl(5)
+			.bowl(4)
+			.bowl(2)
+			.bowl(10)
+			.bowl(10)
+			.bowl(10)
+			.bowl(9)
+			.bowl(1)
+			.bowl(3)
+			.bowl(7)
+			.bowl(8)
+			.bowl(1)
+			.bowl(10)
+			.bowl(6)
+			.bowl(4);
+		
+		int score = bowling.score();
+		
+		assertEquals(179, score);
+	}
+
 }
