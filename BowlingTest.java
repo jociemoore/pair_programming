@@ -241,7 +241,7 @@ public class BowlingTest {
 
 			String expectedScoreboard =
 				"| X | X | X | X | X | X | X | X | X |X,X,X|\n" +
-				"| 30| 60| 90|120|150|180|210|240|270|300|";
+				"| 30| 30| 30| 30| 30| 30| 30| 30| 30| 30|";
 
 			String actualScoreboard = bowling.printScoreboard();
 
@@ -263,7 +263,7 @@ public class BowlingTest {
 
 		String expectedScoreboard = 
 				"|1,2|3,4|5,4|3,2|1,0|1,2|3,4|5,4|3,2|1,0|\n" +
-				"|  3| 10| 19| 24| 25| 28| 35| 44| 49| 50|";
+				"|  3|  7|  9|  5|  1|  3|  7|  9|  5|  1|";
 		String actualScoreboard = bowling.printScoreboard();
 
 		assertEquals(expectedScoreboard, actualScoreboard);
@@ -285,7 +285,7 @@ public class BowlingTest {
 
 		String expectedScoreboard =
 			"|5,/|0,/|2,/|4,/|6,/|8,/|9,/|7,/|3,/|1,/,5|\n" +
-			"| 10| 22| 36| 52| 70| 89|106|119|130|145|";
+			"| 10| 12| 14| 16| 18| 19| 17| 13| 11| 15|";
 		String actualScoreboard = bowling.printScoreboard();
 
 		assertEquals(expectedScoreboard, actualScoreboard);
@@ -299,7 +299,7 @@ public class BowlingTest {
 		
 		String expectedScoreboard =
 			"|5,2|7,/|8, |\n" +
-			"|  7| 25|   |";
+			"|  7| 18|   |";
 		String actualScoreboard = bowling.printScoreboard();
 		
 		assertEquals(expectedScoreboard, actualScoreboard);
@@ -321,7 +321,7 @@ public class BowlingTest {
 
 		String expectedScoreboard =
 			"| X | X | X | X | X | X | X | X | X |X,5, |\n" +
-			"| 30| 60| 90|120|150|180|210|240|265|   |";
+			"| 30| 30| 30| 30| 30| 30| 30| 30| 25|   |";
 		String actualScoreboard = bowling.printScoreboard();
 		assertEquals(expectedScoreboard, actualScoreboard);
 	}
@@ -343,7 +343,7 @@ public class BowlingTest {
 
 		String expectedScoreboard =
 			"| X | X | X | X | X | X | X | X | X |X,X,9|\n" +
-			"| 30| 60| 90|120|150|180|210|240|270|299|";
+			"| 30| 30| 30| 30| 30| 30| 30| 30| 30| 29|";
 		String actualScoreboard = bowling.printScoreboard();
 		assertEquals(expectedScoreboard, actualScoreboard);
 	}
@@ -365,9 +365,34 @@ public class BowlingTest {
 
 		String expectedScoreboard =
 			"| X | X | X | X | X | X | X | X | X |0,/,9|\n" +
-			"| 30| 60| 90|120|150|180|210|230|250|269|";
+			"| 30| 30| 30| 30| 30| 30| 30| 20| 20| 19|";
 		String actualScoreboard = bowling.printScoreboard();
 		assertEquals(expectedScoreboard, actualScoreboard);
+	}
+
+	@Test
+	public void shouldScoreRandomGame() {
+		bowling.bowl(10)
+			.bowl(5)
+			.bowl(5)
+			.bowl(4)
+			.bowl(2)
+			.bowl(10)
+			.bowl(10)
+			.bowl(10)
+			.bowl(9)
+			.bowl(1)
+			.bowl(3)
+			.bowl(7)
+			.bowl(8)
+			.bowl(1)
+			.bowl(10)
+			.bowl(6)
+			.bowl(4);
+		
+		int score = bowling.score();
+		
+		assertEquals(179, score);
 	}
 
 }
